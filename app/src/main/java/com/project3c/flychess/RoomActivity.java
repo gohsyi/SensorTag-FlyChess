@@ -1,6 +1,7 @@
 package com.project3c.flychess;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -249,7 +250,7 @@ public class RoomActivity extends Activity {
     public int getScreenWidth()
     {
         DisplayMetrics dm = new DisplayMetrics();
-        ((WindowManager)getSystemService("window")).getDefaultDisplay().getMetrics(dm);
+        ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(dm);
         return dm.widthPixels;
     }
 

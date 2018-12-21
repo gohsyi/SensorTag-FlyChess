@@ -3,13 +3,6 @@ package com.project3c.flychess;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCallback;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattService;
-import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -44,7 +37,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+//import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.UUID;
@@ -77,14 +70,7 @@ public class MainActivity extends Activity {
 
     private LinearLayout main;
 
-    // sensortag part
-    private static final String ARG_ADDRESS = "address";
     private String mAddress;
-    private Calendar previousRead;
-    private BluetoothAdapter mBluetoothAdapter;
-    private BluetoothGatt mGatt;
-    private BluetoothGattService mMovService;
-    private BluetoothGattCharacteristic mRead, mEnable, mPeriod;
 
     View.OnClickListener listener = new View.OnClickListener() {
         @Override
@@ -107,9 +93,7 @@ public class MainActivity extends Activity {
 
         // initialize bluetooth manager & adapter
         Intent intent = getIntent();
-        mAddress = intent.getStringExtra(ARG_ADDRESS);
-        BluetoothManager manager = (BluetoothManager) MainActivity.this.getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = manager.getAdapter();
+        mAddress = intent.getStringExtra("address");
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.game_mode);
@@ -118,7 +102,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.setClass(MainActivity.this,ReplayActivity.class);
+                intent.setClass(MainActivity.this, ReplayActivity.class);
                 startActivity(intent);
             }
         });
@@ -129,6 +113,7 @@ public class MainActivity extends Activity {
         main.setVisibility(View.INVISIBLE);
         tName = (TextView) findViewById(R.id.textView2);
         inputName = (RelativeLayout) findViewById(R.id.input_name);
+
         ok = (ImageView) findViewById(R.id.imageView4);
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,14 +131,17 @@ public class MainActivity extends Activity {
                 }
             }
         });
+
         DisplayMetrics dm = new DisplayMetrics();
-        ((WindowManager) getSystemService("window")).getDefaultDisplay().getMetrics(dm);  // TODO why
+        ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(dm);  // TODO why
+
         View.OnClickListener unl = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tip.dismiss();
             }
         };
+
         tip = new Tip(this, "code : like1\npicture : Hong\nAI : haha\nnet : FFlover", dm.widthPixels, dm.widthPixels / 2 + 260, unl, unl);
         exitTip = new Tip(this, "退出", dm.widthPixels, dm.widthPixels / 2, new View.OnClickListener() {
             @Override
@@ -167,6 +155,7 @@ public class MainActivity extends Activity {
                 finish();
             }
         });
+
         gameSet = new PopupWindow(getLayoutInflater().inflate(R.layout.game_setting, null), dm.widthPixels, dm.widthPixels + 100);
         localChooser = new PopupWindow(getLayoutInflater().inflate(R.layout.local_server_join_or_create, null),
                 dm.widthPixels, dm.widthPixels / 2);
@@ -223,6 +212,7 @@ public class MainActivity extends Activity {
                 i.putExtra("mode", 0);
                 i.putExtra("players", players + 1);
                 i.putExtra("bot", bots);
+                i.putExtra("address", mAddress);  // send address to game activity
                 startActivity(i);
             }
         });
@@ -259,14 +249,6 @@ public class MainActivity extends Activity {
         });
     }
 
-    /**
-     * Called when the activity is visible to the user and actively running.
-     */
-    protected void onResume() {
-        super.onResume();
-        connectDevice(mAddress);
-    }
-
     private void startLocalGame(int players) {  // TODO
         Drawable back = getResources().getDrawable(R.drawable.ok);
         Log.i("MainActivity", "start local game");
@@ -292,7 +274,7 @@ public class MainActivity extends Activity {
                 Intent i = new Intent();
                 if (v == create) {
                     createLocalServer(i,MainActivity.this);
-                }else {
+                } else {
                     i.setClass(MainActivity.this, LocalServerGameActivity.class);
                 }
                 startActivity(i);
@@ -381,167 +363,5 @@ public class MainActivity extends Activity {
 
     public static Activity getInstance() {
         return instance;
-    }
-
-
-
-    /**
-     * Creates a GATT connection to the given device.
-     *
-     * @param address String containing the address of the device
-     */
-    private void connectDevice(String address) {
-        if (!mBluetoothAdapter.isEnabled()) {
-//            Toast.makeText(getActivity(), R.string.state_off, Toast.LENGTH_SHORT).show();
-//            getActivity().finish();
-            Toast.makeText(MainActivity.this, R.string.state_off, Toast.LENGTH_SHORT).show();
-            MainActivity.this.finish();
-        }
-//        mListener.onShowProgress();
-        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-//        mGatt = device.connectGatt(getActivity(), false, mCallback);
-        mGatt = device.connectGatt(MainActivity.this, false, mCallback);
-    }
-
-    private BluetoothGattCallback mCallback = new BluetoothGattCallback() {
-        double result[];
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS", Locale.getDefault());
-
-        @Override
-        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-            super.onConnectionStateChange(gatt, status, newState);
-            switch (newState) {
-                case BluetoothGatt.STATE_CONNECTED:
-                    // as soon as we're connected, discover services
-                    mGatt.discoverServices();
-                    break;
-            }
-        }
-
-        @Override
-        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            super.onServicesDiscovered(gatt, status);
-            // as soon as services are discovered, acquire characteristic and try enabling
-            mMovService = mGatt.getService(UUID.fromString("F000AA80-0451-4000-B000-000000000000"));
-            mEnable = mMovService.getCharacteristic(UUID.fromString("F000AA82-0451-4000-B000-000000000000"));
-            if (mEnable == null) {
-//                Toast.makeText(getActivity(), R.string.service_not_found, Toast.LENGTH_LONG).show();
-//                getActivity().finish();
-                Toast.makeText(MainActivity.this, R.string.service_not_found, Toast.LENGTH_LONG).show();
-                MainActivity.this.finish();
-            }
-            /*
-             * Bits starting with the least significant bit (the rightmost one)
-             * 0       Gyroscope z axis enable
-             * 1       Gyroscope y axis enable
-             * 2       Gyroscope x axis enable
-             * 3       Accelerometer z axis enable
-             * 4       Accelerometer y axis enable
-             * 5       Accelerometer x axis enable
-             * 6       Magnetometer enable (all axes)
-             * 7       Wake-On-Motion Enable
-             * 8:9	    Accelerometer range (0=2G, 1=4G, 2=8G, 3=16G)
-             * 10:15   Not used
-             */
-            mEnable.setValue(0b1001111111, BluetoothGattCharacteristic.FORMAT_UINT16, 0);
-            mGatt.writeCharacteristic(mEnable);
-        }
-
-        /**
-         * Callback indicating the result of a characteristic write operation.
-         *
-         * <p>If this callback is invoked while a reliable write transaction is
-         * in progress, the value of the characteristic represents the value
-         * reported by the remote device. An application should compare this
-         * value to the desired value to be written. If the values don't match,
-         * the application must abort the reliable write transaction.
-         *
-         * @param gatt GATT client invoked {@link BluetoothGatt#writeCharacteristic}
-         * @param characteristic Characteristic that was written to the associated
-         *                       remote device.
-         * @param status The result of the write operation
-         *               {@link BluetoothGatt#GATT_SUCCESS} if the operation succeeds.
-         */
-        @Override
-        public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            super.onCharacteristicWrite(gatt, characteristic, status);
-            if (characteristic == mEnable) {
-                // if enable was successful, set the sensor period to the lowest value
-                mPeriod = mMovService.getCharacteristic(UUID.fromString("F000AA83-0451-4000-B000-000000000000"));
-                if (mPeriod == null) {
-//                    Toast.makeText(getActivity(), R.string.service_not_found, Toast.LENGTH_LONG).show();
-//                    getActivity().finish();
-                    Toast.makeText(MainActivity.this, R.string.service_not_found, Toast.LENGTH_LONG).show();
-                    MainActivity.this.finish();
-                }
-                mPeriod.setValue(0x0A, BluetoothGattCharacteristic.FORMAT_UINT8, 0);
-                mGatt.writeCharacteristic(mPeriod);
-            } else if (characteristic == mPeriod) {
-                // if setting sensor period was successful, start polling for sensor values
-                mRead = mMovService.getCharacteristic(UUID.fromString("F000AA81-0451-4000-B000-000000000000"));
-                if (mRead == null) {
-//                    Toast.makeText(getActivity(), R.string.characteristic_not_found, Toast.LENGTH_LONG).show();
-//                    getActivity().finish();
-                    Toast.makeText(MainActivity.this, R.string.characteristic_not_found, Toast.LENGTH_LONG).show();
-                    MainActivity.this.finish();
-                }
-                previousRead = Calendar.getInstance();
-                mGatt.readCharacteristic(mRead);
-                deviceConnected();
-            }
-        }
-
-        /**
-         * Callback reporting the result of a characteristic read operation.
-         *
-         * @param gatt GATT client invoked {@link BluetoothGatt#readCharacteristic}
-         * @param characteristic Characteristic that was read from the associated
-         *                       remote device.
-         * @param status {@link BluetoothGatt#GATT_SUCCESS} if the read operation
-         *               was completed successfully.
-         */
-        @Override
-        public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            super.onCharacteristicRead(gatt, characteristic, status);
-            // convert raw byte array to G unit values for xyz axes
-            result = Util.convertAccel(characteristic.getValue());  // TODO figure out how this work
-            Log.i("Acceleration x", Double.toString(result[0]));
-            Log.i("Acceleration y", Double.toString(result[1]));
-            Log.i("Acceleration z", Double.toString(result[2]));
-            previousRead = Calendar.getInstance();
-            mGatt.readCharacteristic(mRead);
-        }
-    };
-
-
-    /**
-     * Called when the device has been fully connected.
-     */
-    private void deviceConnected() {
-        // start connection watcher thread
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean hasConnection = true;
-                while (hasConnection) {
-                    long diff = Calendar.getInstance().getTimeInMillis() - previousRead.getTimeInMillis();
-                    if (diff > 2000) {  // no reacts in 2 seconds -> lose connection
-                        hasConnection = false;
-                    }
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
-    }
-
-    /**
-     * Called when the device should be disconnected.
-     */
-    private void deviceDisconnected() {
-        if (mGatt != null) mGatt.disconnect();
     }
 }

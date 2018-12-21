@@ -1,5 +1,6 @@
 package com.project3c.flychess;
 
+import android.content.Context;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ public class LocalServerGameActivity extends Activity {
     private Activity instance;
     private FindLocalServerThread findLocalServerThread;
     private TextView createServer;
+
     public Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -140,7 +142,7 @@ public class LocalServerGameActivity extends Activity {
     public int getScreenWidth()
     {
         DisplayMetrics dm = new DisplayMetrics();
-        ((WindowManager)getSystemService("window")).getDefaultDisplay().getMetrics(dm);
+        ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(dm);
         return dm.widthPixels;
     }
 }

@@ -69,7 +69,9 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
         // after the first device has been discovered, disable the spinning
         // status indicator that is partly hiding the element
         if (mAddresses.size() == 0) mListener.onHideProgress();
-
+        if (address.startsWith("B0:B4:48")) {
+            address = "[SensorTag Device] ".concat(address);
+        }
         // add the device to list if it doesn't exist
         if (!mAddresses.contains(address)) {
             mAddresses.add(address);

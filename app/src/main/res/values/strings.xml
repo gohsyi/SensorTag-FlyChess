@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">sensortag-flychess</string>
+    <string name="app_name">sensortag flychess</string>
 
     <!-- sensortag part -->
     <string name="no_ble">BLE not supported on this device</string>

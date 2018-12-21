@@ -41,7 +41,6 @@ public class SensorTagActivity extends AppCompatActivity implements OnStatusList
 
         mSwipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
         mSwipeContainer.setEnabled(false);
-//        mSwipeContainer.setColorSchemeColors(ContextCompat.getColor(this, R.color.colorAccent));
 
         // load ScanFragment
         mFragmentManager = getSupportFragmentManager();
@@ -52,18 +51,13 @@ public class SensorTagActivity extends AppCompatActivity implements OnStatusList
     @Override
     /*
     * Click on the SensorTag MAC address and switch to its information
-    * TODO jump to flychess game
+    * Jump to flychess game
     * */
     public void onListFragmentInteraction(String address) {
-//        mCurrentFragment = DeviceFragment.newInstance(address);
+        // deliver the address to flychess
         Intent intent = new Intent(SensorTagActivity.this, MainActivity.class);
-        intent.putExtra("address", address);  // deliver the address to flychess
+        intent.putExtra("address", address.substring("[SensorTag Device] ".length()));
         startActivity(intent);
-//        FragmentTransaction transaction = mFragmentManager.beginTransaction();
-//        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left);
-//        transaction.replace(R.id.container, mCurrentFragment);
-//        transaction.addToBackStack(null);
-//        transaction.commit();
     }
 
     @Override
@@ -85,36 +79,4 @@ public class SensorTagActivity extends AppCompatActivity implements OnStatusList
             }
         });
     }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.action_about:
-//                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//                builder.setTitle(R.string.about_title);
-//                builder.setMessage(R.string.about_message);
-//                builder.setNegativeButton(R.string.github, new DialogInterface.OnClickListener() {
-//                    @Override
-//                    /*
-//                    * left top button (three points), to show about
-//                    * */
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        Intent intent = new Intent(Intent.ACTION_VIEW);
-//                        intent.setData(Uri.parse(getString(R.string.github_url)));
-//                        startActivity(intent);
-//                    }
-//                });
-//                builder.setPositiveButton(R.string.close, null);
-//                builder.show();
-//                break;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-//
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.menu_main, menu);
-//        return super.onCreateOptionsMenu(menu);
-//    }
 }

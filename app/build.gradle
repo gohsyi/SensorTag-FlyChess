@@ -15,8 +15,8 @@ android {
     compileSdkVersion 27
     buildToolsVersion '28.0.2'
     defaultConfig {
-        applicationId "com.Project3C.SensorTagGame"
-        minSdkVersion 21
+        applicationId "com.Project3C.SensorTag.FlyChess"
+        minSdkVersion 23
         targetSdkVersion 27
         versionCode 6
         versionName "1.2"
