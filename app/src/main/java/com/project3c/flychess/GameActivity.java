@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
+import android.os.Message;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
@@ -34,6 +35,7 @@ import com.project3c.flychess.data.Cmd;
 import com.project3c.flychess.data.LocalServerMap;
 import com.project3c.flychess.data.Map;
 import com.project3c.flychess.data.NetPlayer;
+import com.project3c.flychess.data.Player;
 import com.project3c.flychess.listener.DiceClickListener;
 import com.project3c.flychess.view.PathNodeView;
 import com.project3c.flychess.view.Tip;
@@ -55,6 +57,11 @@ import sensortag.Util;
  */
 
 public class GameActivity extends Activity {
+    private Player my_player;
+    private int order;
+    private static int thld = 120;
+    private int ran;
+
     private RelativeLayout relativeLayout;
     private Map map = null;
     private ImageView dice;
@@ -228,7 +235,67 @@ public class GameActivity extends Activity {
                 }
             });
         }
-        dice.setOnClickListener(new DiceClickListener(netPlayer));
+//        dice.setOnClickListener(new DiceClickListener(netPlayer));
+        new Thread(new Mythread()).start();
+    }
+
+    public Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            if (order == 1) {
+                order = 0;
+                dice.setEnabled(false);
+                if ((my_player = Map.getInstance().getCurPlayer()) != null) {
+                    if (netPlayer != null) {
+                        if (my_player.getUid() != netPlayer.getUid()) {
+                            System.out.println("not your turn");
+                            return;
+                        }
+                    }
+                    if (!my_player.canTouch()) {
+                        dice.setEnabled(true);
+                        return;
+                    }
+                    if (!my_player.isCanDice() || !my_player.isFlyed()) {
+                        if (!my_player.isFlyed()) {
+                            System.out.println("not fly");
+                        } else {
+                            System.out.println("can not dice");
+                        }
+                        dice.setEnabled(true);
+                        return;
+                    }
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            my_player.dice();
+                        }
+                    }).start();
+                }
+            }
+            order = 0;
+            super.handleMessage(msg);
+        }
+    };
+
+    public class Mythread implements Runnable {
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    Thread.sleep(100);
+                    if (mGatt != null && mRead != null) {
+                        Log.d("Mythread", "trying to read");
+                        mGatt.readCharacteristic(mRead);
+                    }
+                    Message message = new Message();
+                    message.what = 1;
+                    handler.sendMessage(message);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
     }
 
     @Override
@@ -409,7 +476,7 @@ public class GameActivity extends Activity {
                     GameActivity.this.finish();
                 }
                 previousRead = Calendar.getInstance();
-                mGatt.readCharacteristic(mRead);
+//                mGatt.readCharacteristic(mRead);
                 deviceConnected();
             }
         }
@@ -431,8 +498,21 @@ public class GameActivity extends Activity {
             Log.i("Acceleration x", Double.toString(result[0]));
             Log.i("Acceleration y", Double.toString(result[1]));
             Log.i("Acceleration z", Double.toString(result[2]));
+            if (result[0] < 0) result[0] = -0 - result[0];
+            if (result[1] < 0) result[1] = -0 - result[1];
+            if (result[2] < 0) result[2] = -0 - result[2];
+            if (result[0] > thld || result[1] > thld || result[2] > thld) {
+                order = 1;
+                if (result[0] > result[1] && result[0] > result[2]) {
+                    ran = (int) result[0];
+                } else if (result[1] > result[2]) {
+                    ran = (int) result[1];
+                } else {
+                    ran = (int) result[2];
+                }
+            }
             previousRead = Calendar.getInstance();
-            mGatt.readCharacteristic(mRead);
+//            mGatt.readCharacteristic(mRead);
         }
     };
 
