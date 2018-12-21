@@ -1,7 +1,7 @@
 package local.server;
 
-import com.zhry.like1.flychess.MainActivity;
-import com.zhry.like1.flychess.server.Server;
+import com.project3c.flychess.MainActivity;
+import com.project3c.flychess.server.Server;
 
 import game.Map;
 import game.Player;
