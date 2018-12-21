@@ -1,7 +1,6 @@
 package game;
 
 
-
 import local.server.LocalServer;
 import local.server.Message;
 import local.server.PlayerService;
@@ -27,10 +26,12 @@ public class Map implements PathProvider {
     private Aircraft[][] aircrafts;
     private static Map instance;
     private List<Player> winners;
+
     public Map(int players) {
         prepareMap();
         createPlayers(players);
     }
+
     @Override
     public PathNode getHome(int uid, int id) {
         return homes.getHome()[uid * 5 + id + 1];
@@ -50,12 +51,10 @@ public class Map implements PathProvider {
     @Override
     public boolean gameOver() {
 
-        if (users == 1)
-        {
+        if (users == 1) {
             if (winners.size() == 1)
                 return true;
-        }
-        else if (winners.size() == users-1)
+        } else if (winners.size() == users - 1)
             return true;
         return false;
     }
@@ -82,19 +81,17 @@ public class Map implements PathProvider {
 
     public void startGame() {
         int dice;
-        if (users == 2)
-        {
-            dice = (dicing()&1)==1? 0:2;
-        }
-        else if (users == 1)
+        if (users == 2) {
+            dice = (dicing() & 1) == 1 ? 0 : 2;
+        } else if (users == 1)
             dice = 2;
         else {
-            while ((dice = dicing()) >= users);
+            while ((dice = dicing()) >= users) ;
         }
         curPlayer = players[dice];
-        System.out.println( "server:玩家" + getNextUser().getName() + "获得先手");
-        byte[] uid = new byte[]{2,(byte) curPlayer.getUid()};
-        Message msg = new Message(null,Protocol.createPacket((byte) 0,LocalServer.STARTGAME,(byte) 1,uid));
+        System.out.println("server:玩家" + getNextUser().getName() + "获得先手");
+        byte[] uid = new byte[]{2, (byte) curPlayer.getUid()};
+        Message msg = new Message(null, Protocol.createPacket((byte) 0, LocalServer.STARTGAME, (byte) 1, uid));
         LocalServer.getLocalRoomInstance().sendMessage(msg);
         try {
             Thread.sleep(1000);
@@ -113,21 +110,21 @@ public class Map implements PathProvider {
         curPlayer = getNextUser();
         System.out.println("server:it's " + curPlayer.getUid() + " turn");
         curPlayer.play();
-        byte[] data = Protocol.createPacket((byte) 0,LocalServer.TURN,(byte) 1,null);
-        Message msg = new Message(null,data);
+        byte[] data = Protocol.createPacket((byte) 0, LocalServer.TURN, (byte) 1, null);
+        Message msg = new Message(null, data);
         LocalServer.getLocalRoomInstance().sendMessage(msg);
     }
 
     public static Map getInstance() {
         return instance;
     }
-    public void win(Player player)
-    {
+
+    public void win(Player player) {
         players[player.uid] = null;
         winners.add(player);
     }
-    private void createPlayers(int users)
-    {
+
+    private void createPlayers(int users) {
         /*if (users == 1) {
             players[2] = new Player(2, this);
         }
@@ -144,8 +141,7 @@ public class Map implements PathProvider {
         }*/
         players = LocalServer.getLocalRoomInstance().getPlayers();
         for (int i = 0; i < 4; i++) {
-            if (players[i] != null)
-            {
+            if (players[i] != null) {
                 for (int j = 0; j < 4; j++) {
                     aircrafts[i][j] = new Aircraft(i, j, homes.getHome()[i * 5 + j + 1], this);
                     homes.getHome()[i * 5 + j + 1].layoutAircraft(aircrafts[i][j]);
@@ -154,8 +150,8 @@ public class Map implements PathProvider {
         }
         this.users = users;
     }
-    private void prepareMap()
-    {
+
+    private void prepareMap() {
         dice = new Dice();
         commonPath = new PublicPath();
         privatePath = new PrivatePath(commonPath);
@@ -165,23 +161,22 @@ public class Map implements PathProvider {
         instance = this;
         winners = new ArrayList<>();
     }
-    public Player getMe()
-    {
+
+    public Player getMe() {
         return players[2];
     }
-    public Player getNextUser()
-    {
+
+    public Player getNextUser() {
         int uid = curPlayer.getUid();
         while (players[uid = (++uid % 4)] == null) ;
         return players[uid];
     }
-    public void replacePlayer(Player player)
-    {
+
+    public void replacePlayer(Player player) {
         if (player == null)
             return;
         if (player.getUid() == curPlayer.getUid()) {
-            if (curPlayer.diced)
-            {
+            if (curPlayer.diced) {
                 player.dice = curPlayer.dice;
             }
             players[player.getUid()] = player;

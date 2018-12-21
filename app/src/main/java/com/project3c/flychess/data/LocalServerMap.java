@@ -18,12 +18,11 @@ public class LocalServerMap extends Map {
     private int meUid;
     private int currentDice = 1;
     private boolean initFinish = false;
-    public LocalServerMap(GameActivity gameActivity,NetPlayer netPlayer,int users,int bots, PathNodeView[] comViews,
-                          PathNodeView[] priViews, PathNodeView[] homeViews, Resources res, TextView[] tnames,String[] names)
-    {
-        super(gameActivity,netPlayer,users,bots, comViews, priViews, homeViews, res,tnames);
-        if (netPlayer == null)
-        {
+
+    public LocalServerMap(GameActivity gameActivity, NetPlayer netPlayer, int users, int bots, PathNodeView[] comViews,
+                          PathNodeView[] priViews, PathNodeView[] homeViews, Resources res, TextView[] tnames, String[] names) {
+        super(gameActivity, netPlayer, users, bots, comViews, priViews, homeViews, res, tnames);
+        if (netPlayer == null) {
             System.out.println("NetPlayer is null");
             return;
         }
@@ -40,12 +39,13 @@ public class LocalServerMap extends Map {
         netPlayer.doSomeThing(gameActivity);
         //NetPlayer.setServerSocketAddress("192.168.2.1",10006);
     }
+
     public boolean startGame(int uid) {
-        while (!initFinish);
+        while (!initFinish) ;
         curPlayer = players[uid];
         Message msg = handler.obtainMessage();
         msg.what = 8;
-        msg.obj = new String ("玩家"+names[getNextUser().getUid()].getText().toString()+"获得先手");
+        msg.obj = new String("玩家" + names[getNextUser().getUid()].getText().toString() + "获得先手");
         handler.sendMessage(msg);
         return true;//NetPlayer.getInstance().beReady();
     }
@@ -59,10 +59,10 @@ public class LocalServerMap extends Map {
     public void schedule() {
         System.out.println("not permit schedule");
     }
-    public synchronized void schedule(int net,int nets) {
+
+    public synchronized void schedule(int net, int nets) {
         int i = 0;
-        while (!curPlayer.turnIsOver)
-        {
+        while (!curPlayer.turnIsOver) {
             try {
                 Thread.sleep(200);
                 i++;
@@ -93,7 +93,7 @@ public class LocalServerMap extends Map {
 
     public void setCurrentDice(int currentDice) {
         this.currentDice = currentDice;
-        System.out.println("setDice "+currentDice);
+        System.out.println("setDice " + currentDice);
     }
 
     @Override
@@ -108,8 +108,8 @@ public class LocalServerMap extends Map {
         System.out.println("exit");
         super.exit();
     }
-    public static LocalServerMap getInstance()
-    {
-        return (LocalServerMap)instance;
+
+    public static LocalServerMap getInstance() {
+        return (LocalServerMap) instance;
     }
 }

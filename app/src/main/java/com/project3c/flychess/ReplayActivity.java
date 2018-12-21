@@ -37,8 +37,8 @@ public class ReplayActivity extends Activity {
                         long time = (long) v.getTag();
                         RoomActivity.replay = true;
                         Intent i = new Intent();
-                        i.putExtra("time",time);
-                        System.out.println("src time:"+time);
+                        i.putExtra("time", time);
+                        System.out.println("src time:" + time);
                         RoomActivity.setLocalServer(null);
                         i.setClass(ReplayActivity.this, RoomActivity.class);
                         ReplayActivity.this.startActivity(i);
@@ -57,7 +57,7 @@ public class ReplayActivity extends Activity {
                             public void onClick(View v) {
                                 tip.dismiss();
                                 long time = (long) view.getTag();
-                                GameDatabase.deleteAllData(time,ReplayActivity.this);
+                                GameDatabase.deleteAllData(time, ReplayActivity.this);
                                 ReplayActivity.this.replaysWraper.removeView(view);
                             }
                         });
@@ -68,10 +68,10 @@ public class ReplayActivity extends Activity {
                 replaysWraper.addView(l);
             }
     }
-    public int getScreenWidth()
-    {
+
+    public int getScreenWidth() {
         DisplayMetrics dm = new DisplayMetrics();
-        ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(dm);
+        ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(dm);
         return dm.widthPixels;
     }
 }

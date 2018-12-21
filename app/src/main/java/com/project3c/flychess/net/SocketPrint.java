@@ -8,9 +8,10 @@ import java.net.Socket;
  */
 
 public class SocketPrint extends Socket {
-    public SocketPrint(String address,int port) throws IOException {
-        super(address,port);
+    public SocketPrint(String address, int port) throws IOException {
+        super(address, port);
     }
+
     @Override
     public synchronized void close() throws IOException {
         super.close();

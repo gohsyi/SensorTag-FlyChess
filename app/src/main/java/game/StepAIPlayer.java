@@ -12,9 +12,8 @@ import local.server.Protocol;
 public class StepAIPlayer extends AIPlayer {
     public StepAIPlayer(int uid, PathProvider provider) {
         super(uid, provider);
-        setName("StepFirstBot"+uid);
+        setName("StepFirstBot" + uid);
     }
-
 
 
     @Override
@@ -22,35 +21,27 @@ public class StepAIPlayer extends AIPlayer {
         dice();
         if (turnIsOver)
             return;
-        Aircraft[] craftsAtHome = new Aircraft[4]; int i = 0;
+        Aircraft[] craftsAtHome = new Aircraft[4];
+        int i = 0;
         Aircraft stepMax = null;
-        for (Aircraft aircraft : Map.getInstance().getAircrafts(uid))
-        {
-            if (aircraft.atHome())
-            {
+        for (Aircraft aircraft : Map.getInstance().getAircrafts(uid)) {
+            if (aircraft.atHome()) {
                 craftsAtHome[i++] = aircraft;
-            }
-            else if (!aircraft.isArrive())
-            {
-                if (aircraft.moreThan(stepMax,dice))
-                {
+            } else if (!aircraft.isArrive()) {
+                if (aircraft.moreThan(stepMax, dice)) {
                     stepMax = aircraft;
                 }
             }
         }
-        if (dice == 6)
-        {
-            if (craftsAtHome[0] != null)
-            {
+        if (dice == 6) {
+            if (craftsAtHome[0] != null) {
                 craftsAtHome[0].setCanFly(true);
                 craftsAtHome[0].fly(1);
-                byte[] other = new byte[]{4,(byte) getUid(),(byte) craftsAtHome[0].getId(),(byte) 1};
-                byte[] data = Protocol.createPacket((byte) 0,LocalServer.FLY,(byte) 1,other);
-                Message msg = new Message(null,data);
+                byte[] other = new byte[]{4, (byte) getUid(), (byte) craftsAtHome[0].getId(), (byte) 1};
+                byte[] data = Protocol.createPacket((byte) 0, LocalServer.FLY, (byte) 1, other);
+                Message msg = new Message(null, data);
                 LocalServer.getLocalRoomInstance().sendMessage(msg);
-            }
-            else
-            {
+            } else {
                 if (stepMax == null) {
                     setTurnIsOver();
                     return;
@@ -62,16 +53,14 @@ public class StepAIPlayer extends AIPlayer {
                 }*/
                 stepMax.setCanFly(true);
                 stepMax.fly(dice);
-                byte[] other = new byte[]{4,(byte) getUid(),(byte) stepMax.getId(),(byte) getDice()};
-                byte[] data = Protocol.createPacket((byte) 0,LocalServer.FLY,(byte) 1,other);
-                Message msg = new Message(null,data);
+                byte[] other = new byte[]{4, (byte) getUid(), (byte) stepMax.getId(), (byte) getDice()};
+                byte[] data = Protocol.createPacket((byte) 0, LocalServer.FLY, (byte) 1, other);
+                Message msg = new Message(null, data);
                 LocalServer.getLocalRoomInstance().sendMessage(msg);
             }
             finishFly();
             think();
-        }
-        else
-        {
+        } else {
             if (stepMax == null) {
                 setTurnIsOver();
                 return;
@@ -83,9 +72,9 @@ public class StepAIPlayer extends AIPlayer {
             }*/
             stepMax.setCanFly(true);
             stepMax.fly(dice);
-            byte[] other = new byte[]{4,(byte) getUid(),(byte) stepMax.getId(),(byte) getDice()};
-            byte[] data = Protocol.createPacket((byte) 0,LocalServer.FLY,(byte) 1,other);
-            Message msg = new Message(null,data);
+            byte[] other = new byte[]{4, (byte) getUid(), (byte) stepMax.getId(), (byte) getDice()};
+            byte[] data = Protocol.createPacket((byte) 0, LocalServer.FLY, (byte) 1, other);
+            Message msg = new Message(null, data);
             LocalServer.getLocalRoomInstance().sendMessage(msg);
             finishFly();
             setTurnIsOver();

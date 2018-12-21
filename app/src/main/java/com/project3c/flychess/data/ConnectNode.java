@@ -11,9 +11,9 @@ import com.project3c.flychess.view.PathNodeView;
  */
 public class ConnectNode extends PathNode {
     private PathNode privateNext;
-    public ConnectNode(int uid, PathNodeView view, Handler handler)
-    {
-        super(uid,view,handler);
+
+    public ConnectNode(int uid, PathNodeView view, Handler handler) {
+        super(uid, view, handler);
         privateNext = null;
     }
 
@@ -21,15 +21,14 @@ public class ConnectNode extends PathNode {
     public PathNode next(Aircraft aircraft) {
         if (aircraft == null)
             return next;
-        if (aircraft.getUid() == uid)
-        {
-            System.out.println(""+privateNext.getUid());
+        if (aircraft.getUid() == uid) {
+            System.out.println("" + privateNext.getUid());
             return privateNext;
         }
         return next;
     }
-    public boolean setPrivateNext(PathNode n)
-    {
+
+    public boolean setPrivateNext(PathNode n) {
         if (n == null)
             return false;
         privateNext = n;
@@ -40,10 +39,10 @@ public class ConnectNode extends PathNode {
     public boolean layoutAircraft(Aircraft aircraft) {
         if (aircraft == null)
             return false;
-            destoryAircrafts(aircraft.getUid());
-            aircrafts.add(aircraft);
-            aircraft.layout();
-            Log.i("uid",""+uid);
+        destoryAircrafts(aircraft.getUid());
+        aircrafts.add(aircraft);
+        aircraft.layout();
+        Log.i("uid", "" + uid);
         return true;
     }
 
@@ -52,7 +51,7 @@ public class ConnectNode extends PathNode {
     }
 
     @Override
-    public int stepsContinue(Aircraft aircraft,int times) {
+    public int stepsContinue(Aircraft aircraft, int times) {
         return 0;
     }
 }

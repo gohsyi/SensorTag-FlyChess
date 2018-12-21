@@ -40,7 +40,7 @@ import game.*;
 public class NetPlayer extends Player implements Serializable {
     private boolean depute = false;
     private Socket socket;
-    private boolean isServer ;
+    private boolean isServer;
     private InputStream in;
     private OutputStream out;
     private boolean prepare;
@@ -53,14 +53,14 @@ public class NetPlayer extends Player implements Serializable {
     protected GameDatabase gameDatabase;
     protected Handler roomHandler;
     private boolean isOver = false;
-    protected NetPlayer(Socket socket,boolean isServer,Handler handler) throws IOException {
-        super(0, null,null);
+
+    protected NetPlayer(Socket socket, boolean isServer, Handler handler) throws IOException {
+        super(0, null, null);
         prepare = false;
         host = false;
         this.roomHandler = handler;
         this.socket = socket;
-        if (socket != null)
-        {
+        if (socket != null) {
             socket.setSoTimeout(0);
             in = socket.getInputStream();
             out = socket.getOutputStream();
@@ -68,10 +68,9 @@ public class NetPlayer extends Player implements Serializable {
         protocols = new LinkedBlockingQueue<>();
         this.isServer = isServer;
         Activity activity = MainActivity.getInstance();
-        if (socket != null)
-        {
-            if (activity != null )
-                gameDatabase = new GameDatabase(activity,System.currentTimeMillis(),isServer);
+        if (socket != null) {
+            if (activity != null)
+                gameDatabase = new GameDatabase(activity, System.currentTimeMillis(), isServer);
             else {
                 handler.sendEmptyMessage(-4);
                 System.out.println("SensorTagActivity destoryed");
@@ -79,6 +78,7 @@ public class NetPlayer extends Player implements Serializable {
             }
         }
     }
+
     public void prepare() {
         send(Protocol.createPacket((byte) 1, Server.PREPARE, (byte) 1, null));
     }
@@ -99,8 +99,8 @@ public class NetPlayer extends Player implements Serializable {
         System.out.println("left room");
         inRoom = false;
     }
-    public void  leftMap()
-    {
+
+    public void leftMap() {
         isOver = true;
         if (operatThread != null) {
             operatThread.interrupt();
@@ -113,7 +113,8 @@ public class NetPlayer extends Player implements Serializable {
         System.out.println("fly");
         send(Protocol.createPacket((byte) 1, Server.FLY, (byte) 1, aids));
     }
-    public static void JoinRoom(final InetAddress address, String name,Handler handler) {
+
+    public static void JoinRoom(final InetAddress address, String name, Handler handler) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -122,11 +123,10 @@ public class NetPlayer extends Player implements Serializable {
                     OutputStream out = socket.getOutputStream();
                     InputStream in = socket.getInputStream();
                     byte[] data = new byte[100];
-                    byte[] names = new byte[name.getBytes().length+1];
+                    byte[] names = new byte[name.getBytes().length + 1];
                     names[0] = (byte) names.length;
-                    for (int i = 0; i < names.length-1;i++)
-                    {
-                        names[i+1] = name.getBytes()[i];
+                    for (int i = 0; i < names.length - 1; i++) {
+                        names[i + 1] = name.getBytes()[i];
                     }
                     if (!send(Protocol.createPacket((byte) 1, Server.JOIN, (byte) 1, names), out))
                         return;
@@ -141,20 +141,19 @@ public class NetPlayer extends Player implements Serializable {
 
                     System.out.println("joined");
 
-                    NetPlayer netPlayer = getInstance(socket,false,handler);
+                    NetPlayer netPlayer = getInstance(socket, false, handler);
                     netPlayer.inRoom = true;
-                    if (netPlayer == null)
-                    {
+                    if (netPlayer == null) {
                         handler.sendEmptyMessage(-3);
                         return;
                     }
                     netPlayer.gameDatabase.addData(data);
                     netPlayer.resignUid(protocol.getData()[1]);
-                    System.out.println("netplayer's uid:"+netPlayer.getUid());
+                    System.out.println("netplayer's uid:" + netPlayer.getUid());
                     System.out.println("uid " + (int) protocol.getData()[1]);
                     if (protocol.getData()[1] == 2)
                         netPlayer.host = true;
-                    Message msg =handler.obtainMessage();
+                    Message msg = handler.obtainMessage();
                     msg.obj = netPlayer;
                     msg.what = -2;
                     handler.sendMessage(msg);
@@ -217,10 +216,11 @@ public class NetPlayer extends Player implements Serializable {
         }
 
     }
-    public static NetPlayer getInstance(Socket socket,boolean server,Handler handler) {
+
+    public static NetPlayer getInstance(Socket socket, boolean server, Handler handler) {
 
         try {
-            return new NetPlayer(socket,server,handler);
+            return new NetPlayer(socket, server, handler);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -228,19 +228,17 @@ public class NetPlayer extends Player implements Serializable {
     }
 
 
-    protected  void startService() {
+    protected void startService() {
         byte[] data = new byte[100];
         Protocol protocol = null;
         operatThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (!isOver)
-                {
+                while (!isOver) {
                     try {
                         Protocol p = protocols.take();
                         handleAck(p);
-                        if (protocols.size() == 0&&!inRoom)
-                        {
+                        if (protocols.size() == 0 && !inRoom) {
                             break;
                         }
                         System.out.println("take a packet");
@@ -256,19 +254,15 @@ public class NetPlayer extends Player implements Serializable {
             if (in != null) {
                 if (read(data)) {
                     protocol = new Protocol(data);
-                    if (!protocol.isRequest())
-                    {
-                        if (protocol.isPermit())
-                        {
+                    if (!protocol.isRequest()) {
+                        if (protocol.isPermit()) {
                             gameDatabase.addData(data);
                         }
                         protocols.offer(protocol);
-                        System.out.println("recv a packet opt:"+protocol.getOpt());
+                        System.out.println("recv a packet opt:" + protocol.getOpt());
                         if (protocol.getOpt() == 5)
                             System.out.println(protocol.getData()[1]);
-                    }
-                    else
-                    {
+                    } else {
                         handleRequest(protocol);
                     }
                 } else {
@@ -283,8 +277,7 @@ public class NetPlayer extends Player implements Serializable {
 
     protected void loseConnect() {
         System.out.println("lose host");
-        if (roomHandler != null)
-        {
+        if (roomHandler != null) {
             roomHandler.sendEmptyMessage(-1);
         }
         try {
@@ -371,7 +364,7 @@ public class NetPlayer extends Player implements Serializable {
                 if (protocol.isPermit()) {
                     System.out.println("recv turn");
                     //new Schedule().start();
-                    LocalServerMap.getInstance().schedule(0,0);
+                    LocalServerMap.getInstance().schedule(0, 0);
                 }
                 break;
             case Server.STARTGAME:
@@ -445,19 +438,17 @@ public class NetPlayer extends Player implements Serializable {
     }
 
     public void sendAddbot() {
-        send(Protocol.createPacket((byte) 1,Server.ADDBOT,(byte) 1,null));
+        send(Protocol.createPacket((byte) 1, Server.ADDBOT, (byte) 1, null));
     }
 
-    public void depute()
-    {
+    public void depute() {
         depute = true;
-        send(Protocol.createPacket((byte) 1,Server.DEPUTEON,(byte) 1,null));
+        send(Protocol.createPacket((byte) 1, Server.DEPUTEON, (byte) 1, null));
     }
 
-    public void noDepute()
-    {
+    public void noDepute() {
         depute = false;
-        send(Protocol.createPacket((byte) 1,Server.DEPUTEOFF,(byte) 1,null));
+        send(Protocol.createPacket((byte) 1, Server.DEPUTEOFF, (byte) 1, null));
     }
 
     @Override
@@ -467,12 +458,9 @@ public class NetPlayer extends Player implements Serializable {
     }
 
     public void toggleDepute() {
-        if (depute)
-        {
+        if (depute) {
             noDepute();
-        }
-        else
-        {
+        } else {
             depute();
         }
     }
@@ -482,28 +470,26 @@ public class NetPlayer extends Player implements Serializable {
         return !depute;
     }
 
-    public static void scanRoomsFromServer(Handler handler)
-    {
+    public static void scanRoomsFromServer(Handler handler) {
         Socket socket = null;
         System.out.println("scan start");
         try {
-            socket = new Socket(Server.serverAddress,Server.port);
+            socket = new Socket(Server.serverAddress, Server.port);
             socket.setSoTimeout(5000);
-            send(Protocol.createPacket((byte) 1,Server.SCAN,(byte) 1,null),socket.getOutputStream());
+            send(Protocol.createPacket((byte) 1, Server.SCAN, (byte) 1, null), socket.getOutputStream());
             byte[] data = new byte[1024];
-            while (read(data,socket.getInputStream(),0)) {
+            while (read(data, socket.getInputStream(), 0)) {
                 if (data[0] < 11)
                     continue;
                 int id = 0;
-                for (int i = 0;i < 4;i++)
-                {
-                    id = id | data[5+i]<<i*8;
+                for (int i = 0; i < 4; i++) {
+                    id = id | data[5 + i] << i * 8;
                 }
 
-                ServerInfo serverInfo = new ServerInfo(new String(data,11,(int)data[0]-11),id,data[9],data[10]);
-                System.out.println("scan: id:" + id +"\n"+new String(data,11,(int)data[0]-11));
-                System.out.println("type:"+serverInfo.getType());
-                System.out.println("players:"+serverInfo.getPlayers());
+                ServerInfo serverInfo = new ServerInfo(new String(data, 11, (int) data[0] - 11), id, data[9], data[10]);
+                System.out.println("scan: id:" + id + "\n" + new String(data, 11, (int) data[0] - 11));
+                System.out.println("type:" + serverInfo.getType());
+                System.out.println("players:" + serverInfo.getPlayers());
                 Message msg = handler.obtainMessage();
                 msg.what = 0;
                 msg.obj = serverInfo;
@@ -512,8 +498,7 @@ public class NetPlayer extends Player implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();
             return;
-        }
-        finally {
+        } finally {
             try {
                 if (socket != null)
                     socket.close();
@@ -523,7 +508,7 @@ public class NetPlayer extends Player implements Serializable {
         }
     }
 
-    public static void JoinRoom(int id,String playerName,Handler handler) {
+    public static void JoinRoom(int id, String playerName, Handler handler) {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -534,19 +519,17 @@ public class NetPlayer extends Player implements Serializable {
                     InputStream in = socket.getInputStream();
                     byte[] data = new byte[100];
                     int pos = 1;
-                    data[pos++] =  (byte) id;
-                    data[pos++] =  (byte) (id >> 8);
-                    data[pos++] =  (byte) (id >> 16);
-                    data[pos++] =  (byte) (id >> 24);
+                    data[pos++] = (byte) id;
+                    data[pos++] = (byte) (id >> 8);
+                    data[pos++] = (byte) (id >> 16);
+                    data[pos++] = (byte) (id >> 24);
                     byte[] names = playerName.getBytes();
-                    for (int i = 0;i < names.length && i < 20;i++)
-                    {
+                    for (int i = 0; i < names.length && i < 20; i++) {
                         data[pos++] = names[i];
                     }
                     data[0] = (byte) pos;
                     System.out.println("jaja");
-                    if (!send(Protocol.createPacket((byte) 1, Server.JOIN, (byte) 1, data), out))
-                    {
+                    if (!send(Protocol.createPacket((byte) 1, Server.JOIN, (byte) 1, data), out)) {
                         System.out.println("send error");
                         return;
                     }
@@ -561,17 +544,16 @@ public class NetPlayer extends Player implements Serializable {
                     }
                     System.out.println("joined");
 
-                    NetPlayer netPlayer = getInstance(socket,true,handler);
+                    NetPlayer netPlayer = getInstance(socket, true, handler);
                     netPlayer.inRoom = true;
-                    if (netPlayer == null)
-                    {
+                    if (netPlayer == null) {
                         System.out.println("Netplayer is null");
                         handler.sendEmptyMessage(-3);
                         return;
                     }
                     netPlayer.gameDatabase.addData(data);
                     netPlayer.resignUid(protocol.getData()[1]);
-                    System.out.println("netplayer's uid:"+netPlayer.getUid());
+                    System.out.println("netplayer's uid:" + netPlayer.getUid());
                     System.out.println("uid " + (int) protocol.getData()[1]);
                     if (protocol.getData()[1] == 2)
                         netPlayer.host = true;
@@ -607,19 +589,18 @@ public class NetPlayer extends Player implements Serializable {
     public GameDatabase getGameDatabase() {
         return gameDatabase;
     }
-    public void goOn()
-    {
+
+    public void goOn() {
         System.out.println("goOn netPlayer");
     }
-    public void doSomeThing(GameActivity gameActivity)
-    {
-        if (gameActivity == null)
-        {
+
+    public void doSomeThing(GameActivity gameActivity) {
+        if (gameActivity == null) {
             return;
         }
     }
-    public static void createHome(String name, Context context)
-    {
+
+    public static void createHome(String name, Context context) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -630,21 +611,18 @@ public class NetPlayer extends Player implements Serializable {
                     byte[] data = new byte[100];
                     int pos = 0;
                     data[pos++] = (byte) (name.getBytes().length + 1);
-                    for (int i = 0;i < 20 && i< name.getBytes().length;i++)
-                    {
+                    for (int i = 0; i < 20 && i < name.getBytes().length; i++) {
                         data[pos++] = name.getBytes()[i];
                     }
-                    send(Protocol.createPacket((byte)1,Server.NEHHOME,(byte) 1,data),out);
-                    read(data,in,0);
+                    send(Protocol.createPacket((byte) 1, Server.NEHHOME, (byte) 1, data), out);
+                    read(data, in, 0);
                     Protocol p = new Protocol(data);
                     byte[] ids = p.getData();
                     int id = 0;
-                    for (int i = 0;i < 4;i++)
-                    {
-                        id = id | ids[1+i] << i*8;
+                    for (int i = 0; i < 4; i++) {
+                        id = id | ids[1 + i] << i * 8;
                     }
-                    if (p.isPermit())
-                    {
+                    if (p.isPermit()) {
                         RoomActivity.setRoomID(id);
                         Intent i = new Intent();
                         i.setClass(context, RoomActivity.class);

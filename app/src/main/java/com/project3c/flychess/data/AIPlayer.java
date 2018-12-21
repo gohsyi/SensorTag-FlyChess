@@ -9,8 +9,9 @@ import android.os.Message;
 
 public class AIPlayer extends Player {
     private SoundEndCallback notSix;
+
     public AIPlayer(int uid, PathProvider provider, Handler handler) {
-        super(uid, provider,handler);
+        super(uid, provider, handler);
     }
 
     @Override
@@ -31,8 +32,8 @@ public class AIPlayer extends Player {
             }
         }).start();
     }
-    protected void think()
-    {
+
+    protected void think() {
         dice();
         try {
             Thread.sleep(300);
@@ -41,30 +42,24 @@ public class AIPlayer extends Player {
         }
         if (turnIsOver)
             return;
-        Aircraft[] craftsAtHome = new Aircraft[4]; int i = 0;
-        Aircraft[] craftsAtPath = new Aircraft[4]; int j = 0;
-        for (Aircraft aircraft : Map.getInstance().getAircrafts(uid))
-        {
-            if (aircraft.atHome())
-            {
+        Aircraft[] craftsAtHome = new Aircraft[4];
+        int i = 0;
+        Aircraft[] craftsAtPath = new Aircraft[4];
+        int j = 0;
+        for (Aircraft aircraft : Map.getInstance().getAircrafts(uid)) {
+            if (aircraft.atHome()) {
                 craftsAtHome[i++] = aircraft;
                 aircraft.testFly(dice);
-            }
-            else if (!aircraft.isArrive())
-            {
+            } else if (!aircraft.isArrive()) {
                 craftsAtPath[j++] = aircraft;
                 aircraft.testFly(dice);
             }
         }
-        if (dice == 6)
-        {
-            if (craftsAtHome[0] != null)
-            {
+        if (dice == 6) {
+            if (craftsAtHome[0] != null) {
                 craftsAtHome[0].setCanFly(true);
                 craftsAtHome[0].fly(1);
-            }
-            else
-            {
+            } else {
                 craftsAtPath[0].setCanFly(true);
                 craftsAtPath[0].fly(6);
             }
@@ -75,9 +70,7 @@ public class AIPlayer extends Player {
                 e.printStackTrace();
             }
             think();
-        }
-        else
-        {
+        } else {
             craftsAtPath[0].setCanFly(true);
             craftsAtPath[0].fly(dice);
             finishFly();
@@ -86,7 +79,7 @@ public class AIPlayer extends Player {
     }
 
     @Override
-    public  void setTurnIsOver() {
+    public void setTurnIsOver() {
         System.out.println("new turnover");
         turnIsOver = true;
         try {

@@ -12,16 +12,16 @@ import com.project3c.flychess.data.Map;
 
 public class DiceThread extends Thread {
     private Handler handler;
-    public DiceThread(Handler handler)
-    {
+
+    public DiceThread(Handler handler) {
         this.handler = handler;
     }
+
     @Override
     public void run() {
         super.run();
         Dice dice = new Dice();
-        for (int i = 0;i < 4;i++)
-        {
+        for (int i = 0; i < 4; i++) {
             Message msg = handler.obtainMessage();
             msg.obj = new Integer(dice.dicing());
             msg.what = 5;

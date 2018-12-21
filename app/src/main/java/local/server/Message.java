@@ -8,14 +8,16 @@ import game.Player;
 public class Message {
     private PlayerService playerService;
     private byte[] data;
-    public Message(PlayerService playerService,byte[] data)
-    {
+
+    public Message(PlayerService playerService, byte[] data) {
         this.playerService = playerService;
         this.data = data;
     }
+
     public PlayerService getPlayerService() {
         return playerService;
     }
+
     public byte[] getData() {
         return data;
     }

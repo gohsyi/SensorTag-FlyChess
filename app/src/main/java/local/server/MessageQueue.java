@@ -8,13 +8,12 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class MessageQueue {
     private LinkedBlockingQueue<Message> msgQueue;
-    public MessageQueue(int max)
-    {
+
+    public MessageQueue(int max) {
         msgQueue = new LinkedBlockingQueue<>(max);
     }
 
-    public boolean addMessage(Message message)
-    {
+    public boolean addMessage(Message message) {
         return msgQueue.offer(message);
     }
 

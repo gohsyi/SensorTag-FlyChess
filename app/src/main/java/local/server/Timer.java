@@ -4,14 +4,14 @@ package local.server;
  * Created by like1 on 2017/5/23.
  */
 public class Timer extends Thread {
-    public Timer()
-    {
+    public Timer() {
         super();
     }
-    public Timer(Runnable runnable)
-    {
+
+    public Timer(Runnable runnable) {
         super(runnable);
     }
+
     @Override
     public void run() {
         super.run();

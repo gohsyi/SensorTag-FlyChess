@@ -30,6 +30,7 @@ public class Player {
     public SoundEndCallback notSix;
     public SoundEndCallback isSix;
     protected Handler handler;
+
     public Player(int uid, final PathProvider provider, Handler handler) {
         resignUid(uid);
         this.handler = handler;
@@ -214,8 +215,7 @@ public class Player {
         while (!animOver) ;
     }
 
-    public boolean canTouch()
-    {
+    public boolean canTouch() {
         return true;
     }
 }

@@ -47,8 +47,9 @@ public class LocalServer extends Thread {
 
     private static Map map;
     private ServerSocket serverSocket = null;
-    ExecutorService cachedThreadPool ;
+    ExecutorService cachedThreadPool;
     private boolean exit = false;
+
     public LocalServer() {
         cachedThreadPool = Executors.newCachedThreadPool();
         try {
@@ -60,7 +61,7 @@ public class LocalServer extends Thread {
         }
         instance = this;
         try {
-            gameRoom = new GameRoom(MainActivity.playerName+"'s Room", (char) 4);
+            gameRoom = new GameRoom(MainActivity.playerName + "'s Room", (char) 4);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -201,8 +202,8 @@ public class LocalServer extends Thread {
             player.setName(new String(protocol.getData(), 1, protocol.getData()[0] - 1));
             PlayerService playerService = new PlayerService(socket, player);
             if (gameRoom.updateServices(playerService)) {
-                System.out.println("server:"+player.getName() + " joined");
-                System.out.println("server:"+player.getUid());
+                System.out.println("server:" + player.getName() + " joined");
+                System.out.println("server:" + player.getUid());
                 byte[] uid = new byte[]{2, (byte) player.getUid()};
                 out.write(Protocol.createPacket((byte) 0, JOIN, (byte) 1, uid));
                 Service service = new Service(playerService);
@@ -281,8 +282,8 @@ public class LocalServer extends Thread {
         gameRoom.destory();
         exit = true;
     }
-    public InetAddress getLocalAddress()
-    {
+
+    public InetAddress getLocalAddress() {
         return serverSocket.getInetAddress();
     }
 }

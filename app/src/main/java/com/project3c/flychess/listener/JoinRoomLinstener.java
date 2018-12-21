@@ -22,12 +22,13 @@ public class JoinRoomLinstener implements View.OnClickListener {
     private LocalServer localServer;
     private Context context;
     private int roomID;
-    public JoinRoomLinstener(@NonNull LocalServer localServer, Activity context,int roomID)
-    {
+
+    public JoinRoomLinstener(@NonNull LocalServer localServer, Activity context, int roomID) {
         this.localServer = localServer;
         this.context = context;
         this.roomID = roomID;
     }
+
     @Override
     public void onClick(View v) {
         TextView more = (TextView) v.findViewById(R.id.more);

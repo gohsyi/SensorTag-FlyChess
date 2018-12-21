@@ -50,9 +50,9 @@ public class SensorTagActivity extends AppCompatActivity implements OnStatusList
 
     @Override
     /*
-    * Click on the SensorTag MAC address and switch to its information
-    * Jump to flychess game
-    * */
+     * Click on the SensorTag MAC address and switch to its information
+     * Jump to flychess game
+     * */
     public void onListFragmentInteraction(String address) {
         // deliver the address to flychess
         Intent intent = new Intent(SensorTagActivity.this, MainActivity.class);

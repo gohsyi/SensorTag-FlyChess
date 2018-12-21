@@ -5,25 +5,22 @@ package local.server;
  */
 public class MessageDispatcher extends Thread {
     MessageQueue messageQueue;
-    public MessageDispatcher(MessageQueue messageQueue)
-    {
+
+    public MessageDispatcher(MessageQueue messageQueue) {
         this.messageQueue = messageQueue;
     }
+
     Message msg;
+
     @Override
     public void run() {
         super.run();
-        while ((msg = messageQueue.getMessage()) != null)
-        {
+        while ((msg = messageQueue.getMessage()) != null) {
             PlayerService playerService = msg.getPlayerService();
-            if (playerService == null)
-            {
+            if (playerService == null) {
                 LocalServer.getLocalRoomInstance().sendMessageToAll(msg);
-            }
-            else
-            {
-                if (!playerService.send(msg.getData()))
-                {
+            } else {
+                if (!playerService.send(msg.getData())) {
                     LocalServer.getLocalRoomInstance().removePlayer(playerService);
                 }
             }

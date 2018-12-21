@@ -17,10 +17,10 @@ public class DiceClickListener implements ImageView.OnClickListener {
     private Player player;
     private NetPlayer netPlayer;
 
-    public DiceClickListener(NetPlayer netPlayer)
-    {
+    public DiceClickListener(NetPlayer netPlayer) {
         this.netPlayer = netPlayer;
     }
+
     @Override
     public void onClick(View v) {
         v.setEnabled(false);
@@ -31,8 +31,7 @@ public class DiceClickListener implements ImageView.OnClickListener {
                     return;
                 }
             }
-            if (!player.canTouch())
-            {
+            if (!player.canTouch()) {
                 v.setEnabled(true);
                 return;
             }

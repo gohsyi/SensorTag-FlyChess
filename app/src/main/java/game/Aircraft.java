@@ -1,8 +1,6 @@
 package game;
 
 
-
-
 /**
  * Created by like1 on 2017/4/12.
  */
@@ -19,13 +17,13 @@ public class Aircraft {
     private boolean atHome = true;
     private boolean isArrive;
     private PathNode last;
-    public Aircraft(int uid,int id,PathNode postion,PathProvider provider)
-    {
-        if (id<0||id>3)
+
+    public Aircraft(int uid, int id, PathNode postion, PathProvider provider) {
+        if (id < 0 || id > 3)
             throw new IllegalArgumentException();
         else
             this.id = id;
-        if (uid<0||uid>3)
+        if (uid < 0 || uid > 3)
             throw new IllegalArgumentException();
         else
             this.uid = uid;
@@ -39,23 +37,23 @@ public class Aircraft {
             this.provider = provider;
         isArrive = false;
     }
-    private boolean setPosition(PathNode position)
-    {
+
+    private boolean setPosition(PathNode position) {
         if (position == null) {
             return false;
         }
         currentPostion = position;
         return true;
     }
+
     public int testFly(int points) //return steps to AI
     {
         int startSteps = currentPostion.startSteps();
-        if (points <= 0||points>6) {
+        if (points <= 0 || points > 6) {
             Map.setErrno(Map.BAD_POINTS_FOR_FLY);
             return 0;
         }
-        if (atHome())
-        {
+        if (atHome()) {
             if (points == 6)
                 return 100;
             else
@@ -63,23 +61,21 @@ public class Aircraft {
         }
         PathNode pathNode = currentPostion;
         int steps = startSteps;
-        while (points-- > 0)
-        {
+        while (points-- > 0) {
             pathNode = pathNode.next(this);
             steps++;
-            if (flyOrder == ANTICLOCKWISE)
-            {
+            if (flyOrder == ANTICLOCKWISE) {
                 setFlyOrder(CLOCKWISE);
                 return steps - 1;
             }
         }
-        steps += pathNode.stepsContinue(this,1);
-        System.out.println("testFly steps "+steps);
-        return steps ;
+        steps += pathNode.stepsContinue(this, 1);
+        System.out.println("testFly steps " + steps);
+        return steps;
     }
-    public synchronized boolean fly(int points)
-    {
-        if (points <= 0||points>6) {
+
+    public synchronized boolean fly(int points) {
+        if (points <= 0 || points > 6) {
             Map.setErrno(Map.BAD_POINTS_FOR_FLY);
             return false;
         }
@@ -91,36 +87,34 @@ public class Aircraft {
         continueFlyTime++;
         last = currentPostion;
         currentPostion.removeAircraft(this);
-        while (points > 0)
-        {
+        while (points > 0) {
             setPosition(currentPostion.next(this));
-            points --;
+            points--;
         }
         currentPostion.layoutAircraft(this);
         return true;
     }
-    public boolean respawn()
-    {
+
+    public boolean respawn() {
         //currentPostion.removeAircraft(this);
-        setPosition(provider.getHome(uid,id));
-        if(!currentPostion.layoutAircraft(this))
-        {
+        setPosition(provider.getHome(uid, id));
+        if (!currentPostion.layoutAircraft(this)) {
             System.out.println("setPosition Failed at respawn()");
             return false;
         }
         atHome = true;
         return true;
     }
-    public void setCanFly(boolean can)
-    {
+
+    public void setCanFly(boolean can) {
         canFly = can;
     }
-    public int getUid()
-    {
+
+    public int getUid() {
         return uid;
     }
-    public int getContinueFlyTime()
-    {
+
+    public int getContinueFlyTime() {
         return continueFlyTime;
     }
 
@@ -137,15 +131,16 @@ public class Aircraft {
         setPosition(target);
         return currentPostion.layoutAircraft(this);
     }
-    public void setFlyOrder(int order)
-    {
+
+    public void setFlyOrder(int order) {
         flyOrder = order;
     }
+
     public int getFlyOrder() {
         return flyOrder;
     }
-    public void finish()
-    {
+
+    public void finish() {
         Map.getUser(uid).arrive();
     }
 
@@ -160,8 +155,8 @@ public class Aircraft {
     public boolean atHome() {
         return atHome;
     }
-    public void arrive()
-    {
+
+    public void arrive() {
         atHome = false;
         isArrive = true;
         Map.getCurPlayer().arrive();
@@ -175,13 +170,11 @@ public class Aircraft {
         return id;
     }
 
-    public void rollBack()
-    {
+    public void rollBack() {
         flyTo(last);
     }
 
-    public boolean moreThan(Aircraft aircraft,int points)
-    {
+    public boolean moreThan(Aircraft aircraft, int points) {
         if (aircraft == null)
             return true;
         if (testFly(points) > aircraft.testFly(points))

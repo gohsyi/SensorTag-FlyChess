@@ -13,7 +13,7 @@ import static java.lang.Thread.*;
 /**
  * Created by like1 on 2017/4/13.
  */
-public  class Player {
+public class Player {
     public static final int USER_ALL = -1;
     public static final int USER1 = 0;
     public static final int USER2 = 1;
@@ -31,20 +31,19 @@ public  class Player {
     private PlayerService service;
     private boolean ready;
     private Timer timer;
-    private boolean operationOver ;
+    private boolean operationOver;
 
-    public Player(int uid,PathProvider provider)
-    {
+    public Player(int uid, PathProvider provider) {
         this.uid = uid;
         this.provider = provider;
         dice = 0;
-        name = ""+uid;
+        name = "" + uid;
         ready = false;
         timer = null;
         operationOver = true;
     }
-    public synchronized void dice()
-    {
+
+    public synchronized void dice() {
         resetTimer();
         if (isCanDice()) {
             if (provider == null)
@@ -53,22 +52,19 @@ public  class Player {
             byte[] dices = new byte[]{3, (byte) getUid(), (byte) getDice()};
             Message msg = new Message(null, Protocol.createPacket((byte) 0, LocalServer.DICE, (byte) 1, dices));
             LocalServer.getLocalRoomInstance().sendMessage(msg);
-            System.out.println("server:dice with "+dice);
+            System.out.println("server:dice with " + dice);
             flyed = false;
             diced = true;
             if (dice != 6) {
                 canDice = false;
                 Aircraft[] as = Map.getInstance().getAircrafts(uid);
                 int i;
-                for (i = 0;i<as.length;i++)
-                {
-                    if (!as[i].atHome()&&!as[i].isArrive())
-                    {
+                for (i = 0; i < as.length; i++) {
+                    if (!as[i].atHome() && !as[i].isArrive()) {
                         break;
                     }
                 }
-                if (i == as.length)
-                {
+                if (i == as.length) {
                     setTurnIsOver();
                 }
             }
@@ -77,9 +73,8 @@ public  class Player {
     }
 
     public void arrive() {
-        arrives ++;
-        if (arrives == 4)
-        {
+        arrives++;
+        if (arrives == 4) {
             Map.getInstance().win(this);
         }
     }
@@ -91,9 +86,9 @@ public  class Player {
     public int getUid() {
         return uid;
     }
+
     public void play() {
-        if (arrives == 4)
-        {
+        if (arrives == 4) {
             setTurnIsOver();
             return;
         }
@@ -104,10 +99,10 @@ public  class Player {
         timer = new Timer();
         timer.start();
     }
+
     public synchronized void setTurnIsOver() {
         turnIsOver = true;
-        if (Map.getCurPlayer() != this)
-        {
+        if (Map.getCurPlayer() != this) {
             System.out.println("server:invalid turnOver");
             return;
         }
@@ -121,24 +116,27 @@ public  class Player {
     }
 
     public boolean isCanDice() {
-        return canDice&&flyed;
+        return canDice && flyed;
     }
-    public void finishFly()
-    {
+
+    public void finishFly() {
         flyed = true;
         diced = false;
         resetTimer();
     }
+
     public boolean isFlyed() {
         return flyed;
     }
+
     public boolean isDiced() {
         return diced;
     }
-    public boolean isWin()
-    {
+
+    public boolean isWin() {
         return arrives == 4;
     }
+
     public String getName() {
         return name;
     }
@@ -162,23 +160,23 @@ public  class Player {
     public boolean isReady() {
         return ready;
     }
-    public void interruptTimer()
-    {
+
+    public void interruptTimer() {
         if (timer != null)
             timer.interrupt();
     }
-    public void resetTimer()
-    {
+
+    public void resetTimer() {
         interruptTimer();
         timer = new Timer();
         timer.start();
     }
-    public boolean operationOver()
-    {
+
+    public boolean operationOver() {
         return operationOver;
     }
-    public void setOperationOver(boolean value)
-    {
+
+    public void setOperationOver(boolean value) {
         operationOver = true;
     }
 }

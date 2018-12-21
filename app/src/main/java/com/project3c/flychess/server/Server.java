@@ -18,7 +18,7 @@ public class Server {
     private static String localAddress = null;
     private ServerSocket serverSocket;
 
-    public static final String serverAddress = "115.159.82.245" ;
+    public static final String serverAddress = "115.159.82.245";
     public static final int port = 10006;
 
     public static final byte FIND = 0X00;
@@ -44,60 +44,58 @@ public class Server {
     public static final byte DEPUTEOFF = 0X14;
 
     public static final byte NEHHOME = 0x15;
+
     public Server() throws IOException {
 
 
     }
-    public static String getLocalNetAddress()
-    {
+
+    public static String getLocalNetAddress() {
         if (localAddress != null)
             return localAddress;
-        try{
-            Enumeration<NetworkInterface> interfaceList=NetworkInterface.getNetworkInterfaces();
-            if(interfaceList==null){
+        try {
+            Enumeration<NetworkInterface> interfaceList = NetworkInterface.getNetworkInterfaces();
+            if (interfaceList == null) {
                 System.out.println("--No interface found--");
                 return null;
-            }
-            else{
-                while(interfaceList.hasMoreElements()){
+            } else {
+                while (interfaceList.hasMoreElements()) {
                     NetworkInterface iface = interfaceList.nextElement();
                     //System.out.println("Interface "+iface.getName()+":");
                     if (!iface.getName().equals("wlan0"))
                         continue;
-                    Enumeration<InetAddress> addrList=iface.getInetAddresses();
-                    if(!addrList.hasMoreElements()){
+                    Enumeration<InetAddress> addrList = iface.getInetAddresses();
+                    if (!addrList.hasMoreElements()) {
                         System.out.println("\t(No address for this address)");
                     }
-                    while(addrList.hasMoreElements()){
+                    while (addrList.hasMoreElements()) {
                         InetAddress address = addrList.nextElement();
-                        if (address instanceof Inet4Address)
-                        {
+                        if (address instanceof Inet4Address) {
                             return localAddress = address.getHostAddress();
                         }
-                        System.out.print("\tAddress "+((address instanceof InetAddress? "v4"
-                                :(address instanceof Inet6Address ? "(v6)":"(?)"))));
-                        System.out.println(":"+address.getHostAddress());
+                        System.out.print("\tAddress " + ((address instanceof InetAddress ? "v4"
+                                : (address instanceof Inet6Address ? "(v6)" : "(?)"))));
+                        System.out.println(":" + address.getHostAddress());
                     }
                 }
             }
-        }
-        catch(SocketException e){
-            System.out.println("Error getting network interfaces:"+e.getMessage());
+        } catch (SocketException e) {
+            System.out.println("Error getting network interfaces:" + e.getMessage());
             e.printStackTrace();
             return null;
         }
         return null;
     }
-    public static String getLocalNetBroadcastAddress()
-    {
+
+    public static String getLocalNetBroadcastAddress() {
         String addr = getLocalNetAddress();
         if (addr == null)
             return addr;
         int pointPos = addr.lastIndexOf(".");
-        return addr.substring(0,pointPos)+".255";
+        return addr.substring(0, pointPos) + ".255";
     }
-    public static void wifiChanged()
-    {
+
+    public static void wifiChanged() {
         localAddress = null;
     }
 }

@@ -19,7 +19,8 @@ import com.project3c.flychess.listener.PathNodeClickListener;
 @SuppressLint("AppCompatCustomView")
 public class PathNodeView extends ImageView {
     private PathNode pathNode;
-    public PathNodeView(Context context,int id) {
+
+    public PathNodeView(Context context, int id) {
         super(context);
     }
 
@@ -30,8 +31,8 @@ public class PathNodeView extends ImageView {
     public PathNodeView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-    public void setPathNode(PathNode pathNode)
-    {
+
+    public void setPathNode(PathNode pathNode) {
         this.pathNode = pathNode;
     }
 

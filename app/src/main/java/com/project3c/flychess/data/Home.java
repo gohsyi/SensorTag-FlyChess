@@ -10,22 +10,18 @@ import com.project3c.flychess.view.PathNodeView;
 
 public class Home {
     private PathNode[] homes;
-    public Home(PathNodeView[] views, PublicPath common, Handler handler)
-    {
+
+    public Home(PathNodeView[] views, PublicPath common, Handler handler) {
         homes = new PathNode[20];
-        for (int i = 0;i<20;i++)
-        {
-            if (i%5 == 0)
-                homes[i] = new PathNode(Player.USER_ALL,views[i],handler);
+        for (int i = 0; i < 20; i++) {
+            if (i % 5 == 0)
+                homes[i] = new PathNode(Player.USER_ALL, views[i], handler);
             else
-                homes[i] = new PathNode(i/5,views[i],handler);
-            if (i%5 != 0)
-            {
-                homes[i].setNext(homes[(i/5)*5]);
-            }
-            else
-            {
-                homes[i].setNext(common.getStart(i/5));
+                homes[i] = new PathNode(i / 5, views[i], handler);
+            if (i % 5 != 0) {
+                homes[i].setNext(homes[(i / 5) * 5]);
+            } else {
+                homes[i].setNext(common.getStart(i / 5));
             }
         }
     }

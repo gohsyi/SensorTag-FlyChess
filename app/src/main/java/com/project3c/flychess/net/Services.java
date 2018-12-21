@@ -14,9 +14,10 @@ import java.net.Socket;
  * Created by like1 on 2017/5/16.
  */
 
-public class Services implements Runnable{
+public class Services implements Runnable {
     private Socket socket;
     private InputStream in;
+
     public Services(@NonNull Socket socket) throws IOException {
         this.socket = socket;
         in = socket.getInputStream();
@@ -24,8 +25,7 @@ public class Services implements Runnable{
 
     @Override
     public void run() {
-        while (true)
-        {
+        while (true) {
             byte[] buf = new byte[100];
             int len = 0, tlen;
             try {
@@ -34,8 +34,7 @@ public class Services implements Runnable{
                     if (len == buf[0])
                         break;
                 }
-                switch (buf[1])
-                {
+                switch (buf[1]) {
 
                 }
             } catch (IOException e) {

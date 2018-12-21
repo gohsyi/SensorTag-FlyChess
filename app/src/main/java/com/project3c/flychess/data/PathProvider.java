@@ -4,9 +4,13 @@ package com.project3c.flychess.data;
  * Created by like1 on 2017/4/12.
  */
 public interface PathProvider {
-    PathNode getHome(int uid,int id);
+    PathNode getHome(int uid, int id);
+
     PathNode getBelowSuperFly(int uid);
+
     Aircraft[] getAircrafts(int uid);
+
     boolean gameOver();
+
     int dicing();
 }

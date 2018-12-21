@@ -43,34 +43,30 @@ public class AIPlayer extends Player {
             if (provider == null)
                 provider = Map.getInstance();
             dice = provider.dicing();
-            byte[] dices = new byte[]{3,(byte) getUid(),(byte) getDice()};
-            Message msg = new Message(null, Protocol.createPacket((byte) 0, LocalServer.DICE,(byte) 1,dices));
+            byte[] dices = new byte[]{3, (byte) getUid(), (byte) getDice()};
+            Message msg = new Message(null, Protocol.createPacket((byte) 0, LocalServer.DICE, (byte) 1, dices));
             LocalServer.getLocalRoomInstance().sendMessage(msg);
-            System.out.println("server:dice with "+dice);
+            System.out.println("server:dice with " + dice);
             flyed = false;
             diced = true;
             if (dice != 6) {
                 canDice = false;
                 Aircraft[] as = Map.getInstance().getAircrafts(uid);
                 int i;
-                for (i = 0;i<as.length;i++)
-                {
-                    if (!as[i].atHome())
-                    {
+                for (i = 0; i < as.length; i++) {
+                    if (!as[i].atHome()) {
                         if (!as[i].isArrive())
                             break;
                     }
                 }
-                if (i == as.length)
-                {
+                if (i == as.length) {
                     setTurnIsOver();
                 }
             }
         }
     }
 
-    protected void think()
-    {
+    protected void think() {
         dice();
         try {
             Thread.sleep(200);
@@ -79,38 +75,30 @@ public class AIPlayer extends Player {
         }
         if (turnIsOver)
             return;
-        Aircraft[] craftsAtHome = new Aircraft[4]; int i = 0;
-        Aircraft[] craftsAtPath = new Aircraft[4]; int j = 0;
-        for (Aircraft aircraft : Map.getInstance().getAircrafts(uid))
-        {
-            if (aircraft.atHome())
-            {
+        Aircraft[] craftsAtHome = new Aircraft[4];
+        int i = 0;
+        Aircraft[] craftsAtPath = new Aircraft[4];
+        int j = 0;
+        for (Aircraft aircraft : Map.getInstance().getAircrafts(uid)) {
+            if (aircraft.atHome()) {
                 craftsAtHome[i++] = aircraft;
                 aircraft.testFly(dice);
-            }
-            else if (!aircraft.isArrive())
-            {
+            } else if (!aircraft.isArrive()) {
                 craftsAtPath[j++] = aircraft;
                 aircraft.testFly(dice);
             }
         }
-        if (dice == 6)
-        {
-            if (craftsAtHome[0] != null)
-            {
+        if (dice == 6) {
+            if (craftsAtHome[0] != null) {
                 craftsAtHome[0].setCanFly(true);
                 craftsAtHome[0].fly(1);
-            }
-            else
-            {
+            } else {
                 craftsAtPath[0].setCanFly(true);
                 craftsAtPath[0].fly(6);
             }
             finishFly();
             think();
-        }
-        else
-        {
+        } else {
             craftsAtPath[0].setCanFly(true);
             craftsAtPath[0].fly(dice);
             finishFly();
@@ -119,7 +107,7 @@ public class AIPlayer extends Player {
     }
 
     @Override
-    public  void setTurnIsOver() {
+    public void setTurnIsOver() {
         System.out.println("server:new turnover");
         super.setTurnIsOver();
     }

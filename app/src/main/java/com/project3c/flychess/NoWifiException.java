@@ -5,8 +5,7 @@ package com.project3c.flychess;
  */
 
 public class NoWifiException extends Exception {
-    public NoWifiException(String msg)
-    {
+    public NoWifiException(String msg) {
         super(msg);
     }
 }

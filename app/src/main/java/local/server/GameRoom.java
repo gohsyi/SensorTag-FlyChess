@@ -28,7 +28,8 @@ public class GameRoom {
     private boolean gameInitFinish = false;
     private MessageDispatcher dispatcher;
     private Map map;
-    public  void sendMessageToAll(Message msg) {
+
+    public void sendMessageToAll(Message msg) {
         for (PlayerService players : playerServices) {
             players.send(msg.getData());
         }
@@ -99,30 +100,30 @@ public class GameRoom {
     }
 
     public synchronized void removePlayer(PlayerService playerService) {
-            if (playerService == hostService) {
-                //host left
-                System.out.println("server:host was left");
-                for (PlayerService p : playerServices) {
-                    p.shutDownService();
-                }
-                playerServices.clear();
-                game_state = GAME_STATE.PREPATE;
-                return;
+        if (playerService == hostService) {
+            //host left
+            System.out.println("server:host was left");
+            for (PlayerService p : playerServices) {
+                p.shutDownService();
             }
-            if (game_state == GAME_STATE.PREPATE) {
-                System.out.println("server:"+playerService.getPlayer().getName() + " was left");
-                playerServices.remove(playerService);
-                playerService.shutDownService();
-                playerChangedLeft(playerService.getPlayer());
-                reAssignPlayersId();
+            playerServices.clear();
+            game_state = GAME_STATE.PREPATE;
+            return;
+        }
+        if (game_state == GAME_STATE.PREPATE) {
+            System.out.println("server:" + playerService.getPlayer().getName() + " was left");
+            playerServices.remove(playerService);
+            playerService.shutDownService();
+            playerChangedLeft(playerService.getPlayer());
+            reAssignPlayersId();
 
-            } else {
-                System.out.println("server:player " + playerService.getPlayer().getName() + " disconnected");
-                playerService.shutDownService();
-                //playerServices.remove(playerService);
-                playerChangedLeft(playerService.getPlayer());
-                //play with an AI
-            }
+        } else {
+            System.out.println("server:player " + playerService.getPlayer().getName() + " disconnected");
+            playerService.shutDownService();
+            //playerServices.remove(playerService);
+            playerChangedLeft(playerService.getPlayer());
+            //play with an AI
+        }
 
     }
 
@@ -199,10 +200,9 @@ public class GameRoom {
         playerServices.add(new BotService(null,new StepAIPlayer(1,null)));
         playerServices.add(new BotService(null,new StepAIPlayer(0,null)));
         morePlayAdd();*/
-        for (PlayerService p : playerServices)
-        {
-            arr = new byte[]{3,(byte) players,(byte) p.getPlayer().getUid()};
-            sendMessage(new Message(p,Protocol.createPacket((byte) 0, LocalServer.START, (byte) 1, arr)));
+        for (PlayerService p : playerServices) {
+            arr = new byte[]{3, (byte) players, (byte) p.getPlayer().getUid()};
+            sendMessage(new Message(p, Protocol.createPacket((byte) 0, LocalServer.START, (byte) 1, arr)));
         }
         map = new Map(players);
         gameInitFinish = true;
@@ -213,12 +213,9 @@ public class GameRoom {
     }
 
 
-
     public void setGameState(GAME_STATE game_state) {
         this.game_state = game_state;
     }
-
-
 
 
     public void playerChangedAdd(Player player) {
@@ -244,20 +241,18 @@ public class GameRoom {
         data[1] = (byte) player.getUid();
         sendMessage(new Message(null, Protocol.createPacket((byte) 0, LocalServer.PLAYERCHANGEDLEFT, (byte) 1, data)));
     }
-    public synchronized void playerReady(Player player)
-    {
+
+    public synchronized void playerReady(Player player) {
         player.setReady(true);
-        System.out.println("server:"+player.getName()+" ready");
+        System.out.println("server:" + player.getName() + " ready");
         boolean wake = true;
-        for (PlayerService p:playerServices)
-        {
+        for (PlayerService p : playerServices) {
             if (!p.getPlayer().isReady()) {
                 wake = false;
                 break;
             }
         }
-        if (wake)
-        {
+        if (wake) {
             while (!isGameInitFinish())
                 System.out.println("server:game not init finish");
             System.out.println("server:all ready");
@@ -266,14 +261,13 @@ public class GameRoom {
             map.startGame();
         }
     }
-    public void respawn()
-    {
+
+    public void respawn() {
         System.out.println("server:game room respawn");
         game_state = GAME_STATE.PREPATE;
         allReady = false;
         gameInitFinish = false;
-        for (PlayerService p:playerServices)
-        {
+        for (PlayerService p : playerServices) {
             p.setPrepare(false);
             playerChangedLeft(p.getPlayer());
             playerChangedAdd(p.getPlayer());
@@ -284,29 +278,27 @@ public class GameRoom {
         return gameInitFinish;
     }
 
-    public void waitOperationEnd()
-    {
-        for (PlayerService playerService : playerServices)
-        {
+    public void waitOperationEnd() {
+        for (PlayerService playerService : playerServices) {
             playerService.getPlayer().setOperationOver(false);
         }
     }
-    public boolean addBot()
-    {
+
+    public boolean addBot() {
         StepAIPlayer p;
         synchronized (playerServices) {
             if (playerServices.size() == 0) {
-                p =  new StepAIPlayer(2, null);
+                p = new StepAIPlayer(2, null);
             } else if (playerServices.size() == 1) {
-                p =  new StepAIPlayer(0, null);
+                p = new StepAIPlayer(0, null);
             } else if (playerServices.size() == 2) {
-                p =  new StepAIPlayer(1, null);
+                p = new StepAIPlayer(1, null);
             } else if (playerServices.size() == 3) {
-                p =  new StepAIPlayer(3, null);
+                p = new StepAIPlayer(3, null);
             } else {
                 return false;
             }
-            playerServices.add(new BotService(null,p));
+            playerServices.add(new BotService(null, p));
             morePlayAdd();
         }
         byte[] uids = new byte[]{3, 1, (byte) p.getUid()};
@@ -314,8 +306,8 @@ public class GameRoom {
                 Protocol.createPacket((byte) 0, LocalServer.PLAYERSTATECHANGE, (byte) 1, uids)));
         return true;
     }
-    public void destory()
-    {
+
+    public void destory() {
         dispatcher.interrupt();
     }
 }

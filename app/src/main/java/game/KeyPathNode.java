@@ -4,19 +4,18 @@ package game;
 /**
  * Created by like1 on 2017/4/13.
  */
-public class KeyPathNode extends PathNode{
+public class KeyPathNode extends PathNode {
     private PathNode superNext;
-    public KeyPathNode(int uid)
-    {
+
+    public KeyPathNode(int uid) {
         super(uid);
         next = null;
         superNext = null;
     }
+
     @Override
-    public boolean layoutAircraft(Aircraft aircraft)
-    {
-        if (aircraft.getUid() == getUid())
-        {
+    public boolean layoutAircraft(Aircraft aircraft) {
+        if (aircraft.getUid() == getUid()) {
             aircraft.getProvider().getBelowSuperFly(uid).destoryAircrafts(Player.USER_ALL);
             return aircraft.flyTo(superNext);
         }
@@ -25,15 +24,15 @@ public class KeyPathNode extends PathNode{
         aircraft.layout();
         return true;
     }
-    public void setSuperNext(PathNode next)
-    {
+
+    public void setSuperNext(PathNode next) {
         this.superNext = next;
     }
-    @Override
-    public int stepsContinue(Aircraft aircraft,int times) {
 
-        if (aircraft.getUid() == getUid())
-        {
+    @Override
+    public int stepsContinue(Aircraft aircraft, int times) {
+
+        if (aircraft.getUid() == getUid()) {
             if (times == 2)
                 return 12;
             else

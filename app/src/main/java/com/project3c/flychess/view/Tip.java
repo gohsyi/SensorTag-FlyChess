@@ -15,27 +15,27 @@ import com.project3c.flychess.R;
  */
 
 public class Tip extends PopupWindow {
-    private ImageView vx,vok;
-    public Tip(Activity activity, String text, int width ,int height , View.OnClickListener x, View.OnClickListener ok)
-    {
-        super(activity.getLayoutInflater().inflate(R.layout.tip,null),width-10,height);
+    private ImageView vx, vok;
+
+    public Tip(Activity activity, String text, int width, int height, View.OnClickListener x, View.OnClickListener ok) {
+        super(activity.getLayoutInflater().inflate(R.layout.tip, null), width - 10, height);
         vok = (ImageView) getContentView().findViewById(R.id.imageView4);
         vx = (ImageView) getContentView().findViewById(R.id.linearLayout);
         vok.setOnClickListener(ok);
         vx.setOnClickListener(x);
-        ((TextView)getContentView().findViewById(R.id.textView)).setText(text);
+        ((TextView) getContentView().findViewById(R.id.textView)).setText(text);
     }
-    public Tip(Activity activity, String text, int width ,int height , View.OnClickListener x, View.OnClickListener ok,int more)
-    {
-        super(activity.getLayoutInflater().inflate(R.layout.winner,null),width-10,height);
+
+    public Tip(Activity activity, String text, int width, int height, View.OnClickListener x, View.OnClickListener ok, int more) {
+        super(activity.getLayoutInflater().inflate(R.layout.winner, null), width - 10, height);
         vok = (ImageView) getContentView().findViewById(R.id.imageView4);
         vx = (ImageView) getContentView().findViewById(R.id.linearLayout);
         vok.setOnClickListener(ok);
         vx.setOnClickListener(x);
-        ((TextView)getContentView().findViewById(R.id.winners)).setText(text);
+        ((TextView) getContentView().findViewById(R.id.winners)).setText(text);
     }
-    public void show(View root)
-    {
-        showAtLocation(root, Gravity.CENTER,0,0);
+
+    public void show(View root) {
+        showAtLocation(root, Gravity.CENTER, 0, 0);
     }
 }

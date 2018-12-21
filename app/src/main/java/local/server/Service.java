@@ -5,10 +5,11 @@ package local.server;
  */
 public class Service extends Thread {
     private PlayerService service;
-    public Service(PlayerService service)
-    {
+
+    public Service(PlayerService service) {
         this.service = service;
     }
+
     @Override
     public void run() {
         super.run();

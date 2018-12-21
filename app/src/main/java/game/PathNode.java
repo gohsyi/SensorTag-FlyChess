@@ -1,7 +1,6 @@
 package game;
 
 
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,65 +13,60 @@ public class PathNode {
     protected int uid;
     protected PathNode next;
     protected List<Aircraft> aircrafts;
+
     public PathNode(int uid) {
-        if (uid <-1||uid>4) {
+        if (uid < -1 || uid > 4) {
             throw new IllegalArgumentException();
-        }
-        else {
+        } else {
             this.uid = uid;
         }
         aircrafts = new ArrayList<>();
         next = null;
     }
-    public int getUid()
-    {
+
+    public int getUid() {
         return uid;
     }
-    public boolean removeAircraft(Aircraft aircraft)
-    {
+
+    public boolean removeAircraft(Aircraft aircraft) {
         return aircrafts.remove(aircraft);
     }
-    public boolean layoutAircraft(Aircraft aircraft)
-    {
+
+    public boolean layoutAircraft(Aircraft aircraft) {
         if (aircraft == null)
             return false;
-        if (uid == aircraft.getUid()&&aircraft.getContinueFlyTime()<2) {
+        if (uid == aircraft.getUid() && aircraft.getContinueFlyTime() < 2) {
             if (aircraft.fly(4)) {
                 return true;
-            }
-            else
-            {
+            } else {
                 aircrafts.add(aircraft);
                 aircraft.layout();
             }
-        }
-        else {
+        } else {
             destoryAircrafts(aircraft.getUid());
             aircrafts.add(aircraft);
             aircraft.layout();
         }
         return true;
     }
-    public void setNext(PathNode next)
-    {
+
+    public void setNext(PathNode next) {
         this.next = next;
     }
-    public PathNode next(Aircraft aircraft)
-    {
+
+    public PathNode next(Aircraft aircraft) {
         return next;
     }
-    protected void destoryAircrafts(int uid)
-    {
+
+    protected void destoryAircrafts(int uid) {
         if (aircrafts == null)
             return;
         Iterator<Aircraft> iterator = aircrafts.iterator();
         Aircraft aircraft;
-        while (iterator.hasNext())
-        {
+        while (iterator.hasNext()) {
             aircraft = iterator.next();
-            if (aircraft != null)
-            {
-                if (aircraft.getUid()!=uid) {
+            if (aircraft != null) {
+                if (aircraft.getUid() != uid) {
                     aircraft.respawn();
                     iterator.remove();
                 }
@@ -84,19 +78,17 @@ public class PathNode {
         return aircrafts;
     }
 
-    public int stepsContinue(Aircraft aircraft,int times)
-    {
+    public int stepsContinue(Aircraft aircraft, int times) {
         int steps = 0;
         if (times == 2)
             return 0;
-        if (aircraft.getUid() == getUid())
-        {
-            return 4 + next(aircraft).next(aircraft).next(aircraft).next(aircraft).stepsContinue(aircraft,++times);
+        if (aircraft.getUid() == getUid()) {
+            return 4 + next(aircraft).next(aircraft).next(aircraft).next(aircraft).stepsContinue(aircraft, ++times);
         }
         return 0;
     }
-    public int startSteps()
-    {
+
+    public int startSteps() {
         return 2;
     }
 }

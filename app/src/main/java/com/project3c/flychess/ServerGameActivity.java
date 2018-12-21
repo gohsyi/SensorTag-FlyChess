@@ -28,8 +28,7 @@ public class ServerGameActivity extends Activity {
     private LinearLayout serverWraper;
     private static ServerGameActivity activity;
     private TextView createServer;
-    public  Handler handler = new Handler()
-    {
+    public Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -37,15 +36,16 @@ public class ServerGameActivity extends Activity {
             if (serverInfo == null)
                 return;
             LayoutInflater inflater = activity.getLayoutInflater();
-            LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.game_room,null);
+            LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.game_room, null);
             linearLayout.setGravity(Gravity.CENTER);
             activity.serverWraper.addView(linearLayout);
             ((TextView) linearLayout.findViewById(R.id.trasScreenTextView04)).setText(serverInfo.getName());
-            ((TextView) linearLayout.findViewById(R.id.more)).setText( "房间ID:"+serverInfo.getId()+"   玩家("
+            ((TextView) linearLayout.findViewById(R.id.more)).setText("房间ID:" + serverInfo.getId() + "   玩家("
                     + serverInfo.getPlayers() + "/" + serverInfo.getType() + ")");
-            linearLayout.setOnClickListener(new JoinRoomLinstener(null, activity,serverInfo.getId()));
+            linearLayout.setOnClickListener(new JoinRoomLinstener(null, activity, serverInfo.getId()));
         }
     };
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         activity = this;
@@ -55,7 +55,7 @@ public class ServerGameActivity extends Activity {
         createServer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NetPlayer.createHome(MainActivity.playerName,ServerGameActivity.this);
+                NetPlayer.createHome(MainActivity.playerName, ServerGameActivity.this);
             }
         });
         serverWraper = (LinearLayout) findViewById(R.id.server_wraper);
@@ -66,10 +66,10 @@ public class ServerGameActivity extends Activity {
             }
         }).start();
     }
-    public int getScreenWidth()
-    {
+
+    public int getScreenWidth() {
         DisplayMetrics dm = new DisplayMetrics();
-        ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(dm);
+        ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(dm);
         return dm.widthPixels;
     }
 }

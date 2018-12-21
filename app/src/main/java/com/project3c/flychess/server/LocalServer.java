@@ -23,11 +23,11 @@ public class LocalServer {
     private int gameType;
     private int curPlayers;
     private String name;
-    private static Map<InetAddress,LocalServer> serversMap = new HashMap<>();
+    private static Map<InetAddress, LocalServer> serversMap = new HashMap<>();
     private LinearLayout linearLayout;
-    private boolean freshed ;
-    public LocalServer(InetAddress address, int gameType, int curPlayers, String name)
-    {
+    private boolean freshed;
+
+    public LocalServer(InetAddress address, int gameType, int curPlayers, String name) {
         this.address = address;
         this.gameType = gameType;
         this.curPlayers = curPlayers;
@@ -55,12 +55,11 @@ public class LocalServer {
         return name;
     }
 
-    public static Map<InetAddress,LocalServer> getLocalServers() {
+    public static Map<InetAddress, LocalServer> getLocalServers() {
         return serversMap;
     }
 
-    public static void updateLocalServers(LocalServer server, Handler handler)
-    {
+    public static void updateLocalServers(LocalServer server, Handler handler) {
         if (server == null) {
             System.out.println("null");
             serversMap.clear();
@@ -68,12 +67,10 @@ public class LocalServer {
             return;
         }
         Message msg;
-        if (serversMap.get(server.getAddress()) != null)
-        {
+        if (serversMap.get(server.getAddress()) != null) {
             //System.out.println("add top");
             LocalServer localServer = serversMap.get(server.getAddress());
-            if (!server.equals(localServer))
-            {
+            if (!server.equals(localServer)) {
                 localServer.ObjectCopy(server);
             }
             msg = handler.obtainMessage();
@@ -81,12 +78,10 @@ public class LocalServer {
             msg.obj = serversMap.get(server.getAddress());
             handler.sendMessage(msg);
             localServer.setFreshed(true);
-        }
-        else
-        {
+        } else {
             System.out.println("add");
             server.setFreshed(true);
-            serversMap.put(server.getAddress(),server);
+            serversMap.put(server.getAddress(), server);
             msg = handler.obtainMessage();
             msg.what = 0;
             msg.obj = server;
@@ -105,16 +100,16 @@ public class LocalServer {
 
     @Override
     public boolean equals(Object obj) {
-        if (!((LocalServer)obj).name.equals(name))
+        if (!((LocalServer) obj).name.equals(name))
             return false;
-        if (((LocalServer)obj).gameType != gameType)
+        if (((LocalServer) obj).gameType != gameType)
             return false;
-        if (((LocalServer)obj).curPlayers != curPlayers)
+        if (((LocalServer) obj).curPlayers != curPlayers)
             return false;
         return true;
     }
-    private void ObjectCopy(LocalServer l2)
-    {
+
+    private void ObjectCopy(LocalServer l2) {
         name = l2.name;
         gameType = l2.gameType;
         curPlayers = l2.curPlayers;

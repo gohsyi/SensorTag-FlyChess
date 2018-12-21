@@ -51,32 +51,27 @@ public class PathNodeClickListener implements OnClickListener, Runnable {
             System.out.println("there is no aircraft");
             return;
         }
-        if (!player.canTouch())
-        {
+        if (!player.canTouch()) {
             clickOver = true;
             System.out.println("your can't touch when other's turn");
             return;
         }
         aircraft = pathNode.getAircrafts().get(0);
-        if (netPlayer != null)
-        {
-            if (player.getUid() != netPlayer.getUid())
-            {
+        if (netPlayer != null) {
+            if (player.getUid() != netPlayer.getUid()) {
                 clickOver = true;
-                System.out.println("netPlayer id:" +netPlayer.getUid() +"\ncurPlayer id:"+player.getUid());
+                System.out.println("netPlayer id:" + netPlayer.getUid() + "\ncurPlayer id:" + player.getUid());
                 System.out.println("not netplayer");
                 return;
             }
         }
         if (aircraft.getUid() == Map.getInstance().getCurPlayer().getUid() && player.isDiced()) {
-            if (netPlayer != null)
-            {
+            if (netPlayer != null) {
                 netPlayer.fly(aircraft.getId());
                 clickOver = true;
-            }
-            else {
-            flyThread = new Thread(this);
-            flyThread.start();
+            } else {
+                flyThread = new Thread(this);
+                flyThread.start();
             }
         } else {
             if (!player.isDiced()) {
@@ -91,8 +86,7 @@ public class PathNodeClickListener implements OnClickListener, Runnable {
         if (pathNodeClickListener == null) {
             return pathNodeClickListener = new PathNodeClickListener(netPlayer);
         }
-        if (pathNodeClickListener.netPlayer != netPlayer)
-        {
+        if (pathNodeClickListener.netPlayer != netPlayer) {
             return pathNodeClickListener = new PathNodeClickListener(netPlayer);
         }
         return pathNodeClickListener;

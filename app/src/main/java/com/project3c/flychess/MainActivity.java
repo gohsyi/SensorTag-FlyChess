@@ -119,8 +119,8 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 String name = editText.getText().toString();
-                if (name.equals("")||name.equals(" ")) {
-                    Toast.makeText(getContext(),"你并没有输入", Toast.LENGTH_SHORT).show();
+                if (name.equals("") || name.equals(" ")) {
+                    Toast.makeText(getContext(), "你并没有输入", Toast.LENGTH_SHORT).show();
                 } else {
                     tName.setText(name);
                     inputName.setVisibility(View.INVISIBLE);
@@ -273,7 +273,7 @@ public class MainActivity extends Activity {
                 localChooser.dismiss();
                 Intent i = new Intent();
                 if (v == create) {
-                    createLocalServer(i,MainActivity.this);
+                    createLocalServer(i, MainActivity.this);
                 } else {
                     i.setClass(MainActivity.this, LocalServerGameActivity.class);
                 }
@@ -287,16 +287,17 @@ public class MainActivity extends Activity {
         startActivity(i);*/
     }
 
-    public void createLocalServer(Intent i,Context c) {
+    public void createLocalServer(Intent i, Context c) {
         l = new LocalServer();
         l.start();
         i.setClass(c, RoomActivity.class);
-        RoomActivity.setLocalServer(new com.project3c.flychess.server.LocalServer(l.getLocalAddress(),4,1,""));
+        i.putExtra("address", mAddress);
+        RoomActivity.setLocalServer(new com.project3c.flychess.server.LocalServer(l.getLocalAddress(), 4, 1, ""));
     }
 
     private void startServerGame() {
         Intent i = new Intent();
-        i.setClass(this,ServerGameActivity.class);
+        i.setClass(this, ServerGameActivity.class);
         startActivity(i);
         //
     }

@@ -55,11 +55,8 @@ public class LocalServerGameActivity extends Activity {
                     view.setGravity(Gravity.CENTER);
                     serversWraper.addView(view);
                     localServer.setLinearLayout(view);
-                }
-                else
-                {
-                    if (serversWraper.indexOfChild(view) == -1)
-                    {
+                } else {
+                    if (serversWraper.indexOfChild(view) == -1) {
                         LinearLayout parent = (LinearLayout) view.getParent();
                         if (parent != null)
                             parent.removeView(view);
@@ -69,14 +66,12 @@ public class LocalServerGameActivity extends Activity {
                 ((TextView) view.findViewById(R.id.trasScreenTextView04)).setText(localServer.getName());
                 ((TextView) view.findViewById(R.id.more)).setText(localServer.getAddress().toString().substring(1) + "   ("
                         + localServer.getCurPlayers() + "/" + localServer.getGameType() + ")");
-                view.setOnClickListener(new JoinRoomLinstener(localServer, instance,0));
-            } else if (msg.what == 1)
-            {
+                view.setOnClickListener(new JoinRoomLinstener(localServer, instance, 0));
+            } else if (msg.what == 1) {
                 if (localServer.hasView())
                     serversWraper.removeView(localServer.getLinearLayout());
-            }
-            else {
-                for (int i = 1;i<serversWraper.getChildCount();i++)
+            } else {
+                for (int i = 1; i < serversWraper.getChildCount(); i++)
                     serversWraper.removeViewAt(i);
             }
         }
@@ -120,8 +115,7 @@ public class LocalServerGameActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        if (findLocalServerThread != null)
-        {
+        if (findLocalServerThread != null) {
             findLocalServerThread.exit();
         }
         LocalServer.clearServersMap();
@@ -132,17 +126,16 @@ public class LocalServerGameActivity extends Activity {
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK)
-        {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             finish();
             serversWraper.removeAllViews();
         }
         return super.onKeyUp(keyCode, event);
     }
-    public int getScreenWidth()
-    {
+
+    public int getScreenWidth() {
         DisplayMetrics dm = new DisplayMetrics();
-        ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(dm);
+        ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(dm);
         return dm.widthPixels;
     }
 }

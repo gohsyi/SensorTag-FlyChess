@@ -9,8 +9,8 @@ public class ServerInfo {
     private int id;
     private int type;
     private int players;
-    public ServerInfo(String name,int id,int type,int players)
-    {
+
+    public ServerInfo(String name, int id, int type, int players) {
         this.name = name;
         this.id = id;
         this.type = type;

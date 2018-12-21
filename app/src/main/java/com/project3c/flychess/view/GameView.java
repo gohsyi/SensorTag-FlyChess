@@ -15,9 +15,10 @@ import android.view.View;
  * Created by like1 on 2017/4/13.
  */
 
-public class GameView extends View{
-    private int childWidth,childHeight;
-    private int mWidth,mHeight;
+public class GameView extends View {
+    private int childWidth, childHeight;
+    private int mWidth, mHeight;
+
     public GameView(Context context) {
         super(context);
     }
@@ -33,14 +34,14 @@ public class GameView extends View{
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        childHeight = childWidth = (mWidth = MeasureSpec.getSize(widthMeasureSpec)/18);
+        childHeight = childWidth = (mWidth = MeasureSpec.getSize(widthMeasureSpec) / 18);
         mHeight = MeasureSpec.getSize(heightMeasureSpec);
-        Log.i("w h",childHeight+" "+childWidth);
+        Log.i("w h", childHeight + " " + childWidth);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), android.R.drawable.alert_dark_frame),0,0,new Paint());
+        canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), android.R.drawable.alert_dark_frame), 0, 0, new Paint());
     }
 }

@@ -17,8 +17,7 @@ public class Protocol {
         if (data.length < 4)
             throw new IllegalArgumentException();
         this.data = new byte[data.length];
-        for (int i = 0;i < data.length;i++)
-        {
+        for (int i = 0; i < data.length; i++) {
             this.data[i] = data[i];
         }
     }
@@ -40,21 +39,20 @@ public class Protocol {
     }
 
     public byte[] getData() {
-        byte[] data = new byte[this.data.length-4];
-        for (int i = 0;i<data.length;i++)
-        {
-            data[i] = this.data[4+i];
+        byte[] data = new byte[this.data.length - 4];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = this.data[4 + i];
         }
         return data;
     }
 
     public static byte[] createPacket(@NonNull byte flag, @NonNull byte opt, @NonNull byte permit, byte[] others) {
-        if (others != null&&others[0] > 255)
+        if (others != null && others[0] > 255)
             throw new IllegalArgumentException();
         int othersLength = 0;
         if (others != null)
             othersLength = others[0];
-        byte[] data = new byte[4+othersLength];
+        byte[] data = new byte[4 + othersLength];
         int pos = 1;
         data[pos++] = flag;
         data[pos++] = opt;

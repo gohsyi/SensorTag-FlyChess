@@ -21,9 +21,11 @@ import java.io.IOException;
 public class Replayer extends NetPlayer {
     private boolean over = false;
     private Thread replayThread;
+
     public Replayer(Handler handler) throws IOException {
-        super(null,false,handler);
+        super(null, false, handler);
     }
+
     @Override
     public void sendAddbot() {
         return;
@@ -49,6 +51,7 @@ public class Replayer extends NetPlayer {
         over = true;
         inRoom = false;
     }
+
     public void JoinRoom(long time) {
         replayThread = new Thread(new Runnable() {
             @Override
@@ -56,7 +59,7 @@ public class Replayer extends NetPlayer {
                 Activity activity = MainActivity.getInstance();
                 if (activity == null)
                     return;
-                Protocol[] protocols = GameDatabase.getProtocols(time,activity);
+                Protocol[] protocols = GameDatabase.getProtocols(time, activity);
                 if (protocols == null) {
                     System.out.println("select protocol is null");
                     return;
@@ -74,8 +77,7 @@ public class Replayer extends NetPlayer {
                 msg.what = -2;
                 roomHandler.sendMessage(msg);
                 roomHandler.sendEmptyMessage(4);
-                for (int i = 1;i < protocols.length && !over;i++)
-                {
+                for (int i = 1; i < protocols.length && !over; i++) {
                     System.out.println("protocol" + i);
                     if (protocols[i].getOpt() == Server.START) {
                         try {

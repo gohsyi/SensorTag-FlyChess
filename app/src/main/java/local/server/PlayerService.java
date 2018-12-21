@@ -91,33 +91,27 @@ public class PlayerService {
                                         //gameRoom.sendMessage(new Message(null, Protocol.createPacket((byte) 0, LocalServer.START, (byte) 1, null)));
                                         LocalServer.getLocalRoomInstance().startGame(LocalServer.getLocalRoomInstance().getPlayersNum());
                                         break;
-                                    }
-                                    else {
+                                    } else {
                                         System.out.println("server:need all the players prepare");
                                         gameRoom.sendMessage(new Message(null, Protocol.createPacket((byte) 0, LocalServer.START, (byte) 0, null)));
                                     }
-                                } else if (protocol.getOpt() == LocalServer.ADDBOT)
-                                {
-                                    if (this == gameRoom.getHostService())
-                                    {
-                                        if (!gameRoom.addBot())
-                                        {
+                                } else if (protocol.getOpt() == LocalServer.ADDBOT) {
+                                    if (this == gameRoom.getHostService()) {
+                                        if (!gameRoom.addBot()) {
                                             gameRoom.sendMessage(new Message(null,
                                                     Protocol.createPacket((byte) 0, (byte) LocalServer.ADDBOT, (byte) 0, null)));
                                             System.out.println("cannot add bot");
                                         }
 
                                     }
-                                }
-                                else {
+                                } else {
                                     gameRoom.sendMessage(new Message(null, Protocol.createPacket((byte) 0, (byte) -2, (byte) 0, null)));
                                     System.out.println("server:unknow request");
                                 }
                                 break;
                             case PLAYING:
                                 System.out.println("server:opt" + protocol.getOpt());
-                                if (depute)
-                                {
+                                if (depute) {
                                     if (protocol.getOpt() != LocalServer.DEPUTEOFF)
                                         break;
                                 }
@@ -168,15 +162,12 @@ public class PlayerService {
                                     player.finishFly();
                                     if (!player.isCanDice())
                                         player.setTurnIsOver();
-                                } else if (protocol.getOpt() == LocalServer.DEPUTEON)
-                                {
+                                } else if (protocol.getOpt() == LocalServer.DEPUTEON) {
                                     player = new StepAIPlayer(player.getUid(), Map.getInstance());
                                     player.setService(this);
                                     Map.getInstance().replacePlayer(player);
                                     depute = true;
-                                }
-                                else if (protocol.getOpt() == LocalServer.DEPUTEOFF)
-                                {
+                                } else if (protocol.getOpt() == LocalServer.DEPUTEOFF) {
                                     player = new Player(player.getUid(), Map.getInstance());
                                     player.setService(this);
                                     Map.getInstance().replacePlayer(player);
@@ -255,8 +246,7 @@ public class PlayerService {
         isPrepare = prepare;
     }
 
-    public boolean areYouHuman()
-    {
+    public boolean areYouHuman() {
         return true;
     }
 }

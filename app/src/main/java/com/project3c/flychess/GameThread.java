@@ -14,10 +14,11 @@ import com.project3c.flychess.view.PathNodeView;
 
 public class GameThread extends Thread {
     private LocalServerMap map;
-    public GameThread(int meUid, int users, PathNodeView[] comViews, PathNodeView[] priViews, PathNodeView[] homeViews, Resources res)
-    {
+
+    public GameThread(int meUid, int users, PathNodeView[] comViews, PathNodeView[] priViews, PathNodeView[] homeViews, Resources res) {
 
     }
+
     @Override
     public void run() {
         super.run();

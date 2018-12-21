@@ -33,6 +33,7 @@ public class FindLocalServerThread extends Thread {
     private byte[] scanData;
     private static FindLocalServerThread instance;
     private boolean wait = false;
+
     public FindLocalServerThread(Handler handler) throws SocketException {
         this.handler = handler;
         data = new byte[100];
@@ -63,9 +64,8 @@ public class FindLocalServerThread extends Thread {
             try {
                 reciveServerAck(socket, datagramPacket);
                 current = System.currentTimeMillis();
-                if (current - last > 2000)
-                {
-                    for (LocalServer l:LocalServer.getLocalServers().values()) {
+                if (current - last > 2000) {
+                    for (LocalServer l : LocalServer.getLocalServers().values()) {
                         if (!l.isFreshed()) {
                             msg = handler.obtainMessage();
                             msg.what = 1;
@@ -73,7 +73,7 @@ public class FindLocalServerThread extends Thread {
                             handler.sendMessage(msg);
                         }
                     }
-                    for (LocalServer l:LocalServer.getLocalServers().values())
+                    for (LocalServer l : LocalServer.getLocalServers().values())
                         l.setFreshed(false);
                     last = current;
                 }
@@ -85,15 +85,16 @@ public class FindLocalServerThread extends Thread {
         System.out.println("find server over");
         socket.close();
     }
-    public void pause()
-    {
+
+    public void pause() {
         wait = true;
     }
-    public synchronized void wake()
-    {
+
+    public synchronized void wake() {
         wait = false;
         notify();
     }
+
     /*private boolean scanHost(String host)
         {
             DatagramPacket datagramPacket = null;
@@ -135,8 +136,7 @@ public class FindLocalServerThread extends Thread {
         super.interrupt();
     }
 
-    public void exit()
-    {
+    public void exit() {
         exit = true;
         wake();
     }

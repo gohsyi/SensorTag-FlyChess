@@ -62,7 +62,7 @@ public class GameActivity extends Activity {
     public static GameThread gameThread;
     private TextView[] names;
     private Tip tip;
-    private Tip deputeTip,winTip;
+    private Tip deputeTip, winTip;
     private TextView depute;
     private ImageView[] bot;
     private RelativeLayout first;
@@ -81,6 +81,7 @@ public class GameActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("GameActivity", "create");
         netPlayer = RoomActivity.netPlayer;
         names = new TextView[4];
         super.onCreate(savedInstanceState);
@@ -96,14 +97,14 @@ public class GameActivity extends Activity {
         bot[3] = (ImageView) findViewById(R.id.bot3);
         flags = new ImageView[4];
         roomID = (TextView) findViewById(R.id.roomID);
-        flags[0] = (ImageView)findViewById(R.id.pointer_0);
-        flags[1] = (ImageView)findViewById(R.id.pointer_1);
-        flags[2] = (ImageView)findViewById(R.id.pointer_2);
-        flags[3] = (ImageView)findViewById(R.id.pointer_3);
+        flags[0] = (ImageView) findViewById(R.id.pointer_0);
+        flags[1] = (ImageView) findViewById(R.id.pointer_1);
+        flags[2] = (ImageView) findViewById(R.id.pointer_2);
+        flags[3] = (ImageView) findViewById(R.id.pointer_3);
         dm = new DisplayMetrics();
-        ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(dm);
-        int width = dm.widthPixels/15-2;
-        tip = new Tip(this, "退出游戏", dm.widthPixels,dm.widthPixels/2, new View.OnClickListener() {
+        ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels / 15 - 2;
+        tip = new Tip(this, "退出游戏", dm.widthPixels, dm.widthPixels / 2, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tip.dismiss();
@@ -131,11 +132,11 @@ public class GameActivity extends Activity {
                 findViewById(R.id.deputeOn).setVisibility(View.VISIBLE);
             }
         });
-        relativeLayout = (RelativeLayout)findViewById(R.id.activity_main);
+        relativeLayout = (RelativeLayout) findViewById(R.id.activity_main);
         first = (RelativeLayout) findViewById(R.id.tip);
         first.setVisibility(View.INVISIBLE);
         ViewGroup.LayoutParams layoutParams = null;
-        dice = (ImageView)findViewById(R.id.dice);
+        dice = (ImageView) findViewById(R.id.dice);
         PathNodeView[] comViews = new PathNodeView[52];
         PathNodeView[] priViews = new PathNodeView[21];
         PathNodeView[] homeViews = new PathNodeView[20];
@@ -143,20 +144,20 @@ public class GameActivity extends Activity {
         names[1] = (TextView) findViewById(R.id.user1);
         names[2] = (TextView) findViewById(R.id.user2);
         names[3] = (TextView) findViewById(R.id.user3);
-        for (int i = 0 ;i< 52;i++) {
-            layoutParams = ((PathNodeView)relativeLayout.getChildAt(i)).getLayoutParams();
+        for (int i = 0; i < 52; i++) {
+            layoutParams = ((PathNodeView) relativeLayout.getChildAt(i)).getLayoutParams();
             layoutParams.height = width;
             layoutParams.width = width;
-            PathNodeView child = (PathNodeView)relativeLayout.getChildAt(i);
+            PathNodeView child = (PathNodeView) relativeLayout.getChildAt(i);
             child.setLayoutParams(layoutParams);
-            if (i<4) {
+            if (i < 4) {
                 layoutParams = flags[i].getLayoutParams();
                 layoutParams.height = width;
                 layoutParams.width = width;
                 flags[i].setLayoutParams(layoutParams);
                 flags[i].setImageDrawable(null);
             }
-            int j = i%4;
+            int j = i % 4;
             child.setImageDrawable(null);
             switch (j) {
                 case 0:
@@ -175,19 +176,19 @@ public class GameActivity extends Activity {
             comViews[i] = child;
         }
         for (int i = 52; i < 73; i++) {
-            PathNodeView child = (PathNodeView)relativeLayout.getChildAt(i);
-            priViews[i-52] = child;
+            PathNodeView child = (PathNodeView) relativeLayout.getChildAt(i);
+            priViews[i - 52] = child;
             if (i == 72) break;
-            layoutParams = ((PathNodeView)relativeLayout.getChildAt(i)).getLayoutParams();
+            layoutParams = ((PathNodeView) relativeLayout.getChildAt(i)).getLayoutParams();
             layoutParams.height = width;
             layoutParams.width = width;
             child.setLayoutParams(layoutParams);
             child.setImageDrawable(null);
         }
         for (int i = 73; i < 93; i++) {
-            PathNodeView child = (PathNodeView)relativeLayout.getChildAt(i);
-            homeViews[i-73] = child;
-            layoutParams = ((PathNodeView)relativeLayout.getChildAt(i)).getLayoutParams();
+            PathNodeView child = (PathNodeView) relativeLayout.getChildAt(i);
+            homeViews[i - 73] = child;
+            layoutParams = ((PathNodeView) relativeLayout.getChildAt(i)).getLayoutParams();
             layoutParams.height = width;
             layoutParams.width = width;
             child.setLayoutParams(layoutParams);
@@ -195,28 +196,28 @@ public class GameActivity extends Activity {
         }
         Intent i = getIntent();
         //map = new LocalServerMap(0,4,comViews,priViews,homeViews,getResources());
-        int players = i.getIntExtra("players",0);
+        int players = i.getIntExtra("players", 0);
         String[] snames = i.getStringArrayExtra("names");
-        int mode = i.getIntExtra("mode",0);
-        int bots = i.getIntExtra("bot",0);
+        int mode = i.getIntExtra("mode", 0);
+        int bots = i.getIntExtra("bot", 0);
 
         // get sensortag data
-        mAddress = i.getStringExtra(ARG_ADDRESS);
+        mAddress = i.getStringExtra("address");
+        Log.i("GameActivity", mAddress);
         BluetoothManager manager = (BluetoothManager) GameActivity.this.getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = manager.getAdapter();
 
         if (mode == 0) {
-            map = new Map(this,null,players,bots,comViews,priViews,homeViews,getResources(),names);
+            map = new Map(this, null, players, bots, comViews, priViews, homeViews, getResources(), names);
             map.startGame();
             roomID.setText("");
-        }
-        else if (mode == 1) {
+        } else if (mode == 1) {
             depute.setVisibility(View.VISIBLE);
-            map = new LocalServerMap(this,netPlayer,players,bots,comViews,priViews,homeViews,getResources(),names,snames);
+            map = new LocalServerMap(this, netPlayer, players, bots, comViews, priViews, homeViews, getResources(), names, snames);
             if (netPlayer == null)
                 roomID.setText("");
             else
-                roomID.setText("房间ID:"+RoomActivity.getRoomID());
+                roomID.setText("房间ID:" + RoomActivity.getRoomID());
             depute.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -265,6 +266,7 @@ public class GameActivity extends Activity {
     protected void onResume() {
         super.onResume();
         map.setPause(false);
+        Log.i("GameActivity", mAddress);
         connectDevice(mAddress);  // reconnect sensortag device
     }
 
@@ -291,8 +293,7 @@ public class GameActivity extends Activity {
         ok.setOnClickListener(listener);
     }
 
-    public void showBotView(int uid)
-    {
+    public void showBotView(int uid) {
         bot[uid].setVisibility(View.VISIBLE);
     }
 
@@ -308,7 +309,7 @@ public class GameActivity extends Activity {
                 winTip.dismiss();
             }
         };
-        winTip = new Tip(this,s,dm.widthPixels,dm.widthPixels/2 + 50,listener,listener ,0);
+        winTip = new Tip(this, s, dm.widthPixels, dm.widthPixels / 2 + 50, listener, listener, 0);
         winTip.show(depute.getRootView());
     }
 
