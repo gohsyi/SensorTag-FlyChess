@@ -40,6 +40,7 @@ public class LocalServerGameActivity extends Activity {
     private Activity instance;
     private FindLocalServerThread findLocalServerThread;
     private TextView createServer;
+    private String mAddress;
 
     public Handler handler = new Handler() {
         @Override
@@ -66,7 +67,7 @@ public class LocalServerGameActivity extends Activity {
                 ((TextView) view.findViewById(R.id.trasScreenTextView04)).setText(localServer.getName());
                 ((TextView) view.findViewById(R.id.more)).setText(localServer.getAddress().toString().substring(1) + "   ("
                         + localServer.getCurPlayers() + "/" + localServer.getGameType() + ")");
-                view.setOnClickListener(new JoinRoomLinstener(localServer, instance, 0));
+                view.setOnClickListener(new JoinRoomLinstener(localServer, instance, 0, mAddress));
             } else if (msg.what == 1) {
                 if (localServer.hasView())
                     serversWraper.removeView(localServer.getLinearLayout());
@@ -80,6 +81,9 @@ public class LocalServerGameActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent i = getIntent();
+        mAddress = i.getStringExtra("address");
+
         instance = this;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.local_server_game_view);

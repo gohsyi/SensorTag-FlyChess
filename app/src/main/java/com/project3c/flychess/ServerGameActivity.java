@@ -42,7 +42,7 @@ public class ServerGameActivity extends Activity {
             ((TextView) linearLayout.findViewById(R.id.trasScreenTextView04)).setText(serverInfo.getName());
             ((TextView) linearLayout.findViewById(R.id.more)).setText("房间ID:" + serverInfo.getId() + "   玩家("
                     + serverInfo.getPlayers() + "/" + serverInfo.getType() + ")");
-            linearLayout.setOnClickListener(new JoinRoomLinstener(null, activity, serverInfo.getId()));
+            linearLayout.setOnClickListener(new JoinRoomLinstener(null, activity, serverInfo.getId(), ""));
         }
     };
 

@@ -276,6 +276,7 @@ public class MainActivity extends Activity {
                     createLocalServer(i, MainActivity.this);
                 } else {
                     i.setClass(MainActivity.this, LocalServerGameActivity.class);
+                    i.putExtra("address", mAddress);
                 }
                 startActivity(i);
             }

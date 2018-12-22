@@ -22,11 +22,13 @@ public class JoinRoomLinstener implements View.OnClickListener {
     private LocalServer localServer;
     private Context context;
     private int roomID;
+    private String mAddress;
 
-    public JoinRoomLinstener(@NonNull LocalServer localServer, Activity context, int roomID) {
+    public JoinRoomLinstener(@NonNull LocalServer localServer, Activity context, int roomID, String mAddress) {
         this.localServer = localServer;
         this.context = context;
         this.roomID = roomID;
+        this.mAddress = mAddress;
     }
 
     @Override
@@ -39,6 +41,7 @@ public class JoinRoomLinstener implements View.OnClickListener {
         RoomActivity.setRoomID(roomID);
         Intent i = new Intent();
         i.setClass(context, RoomActivity.class);
+        i.putExtra("address", mAddress);
         context.startActivity(i);
     }
 }

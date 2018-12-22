@@ -211,6 +211,7 @@ public class GameActivity extends Activity {
         // get sensortag data
         mAddress = i.getStringExtra("address");
         Log.i("GameActivity", mAddress);
+        assert mAddress != null;
         BluetoothManager manager = (BluetoothManager) GameActivity.this.getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = manager.getAdapter();
 
